@@ -1,0 +1,83 @@
+{% extends 'index.html' %}
+
+{% block page-title %}
+    用户管理
+{% endblock %}
+
+{% block page-path %}
+    <li><a href="{% url 'index' %}">首页</a></li>
+    <li><a href="{% url 'user' %}">用户管理</a></li>
+    <li><a href="{% url 'user_change_permission' user_id %}">修改用户权限</a></li>
+{% endblock %}
+
+{% block page-content %}
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">修改权限</h3>
+        </div>
+        <!-- /.panel-heading -->
+        <div class="panel-body">
+            <form id="form" class="form-horizontal" method="post"
+                  action="{% url 'user_change_permission' user_id %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <div class="col-lg-6">
+                        <select id="id-permission-from" class="form-control" multiple="multiple" size="20">
+                            {% for item in sub_permission_list %}
+                                <option value="{{ item.id }}">{{ item.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-lg-6">
+                        <select id="id-permission-to" name="permission" tag="chosen-list" class="form-control"
+                                multiple="multiple" size="20">
+                            {% for item in user_permission_list %}
+                                <option value="{{ item.id }}">{{ item.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-offset-2 col-lg-10">
+                        <span style="color: red">{{ error }}</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-offset-11 col-lg-1">
+                        <button type="submit" class="btn btn-success">保存</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!-- /.panel-body -->
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        $("select[id='id-permission-from']").delegate("option", "dblclick", function () {
+            var permission_value = $(this).val();
+            var permission_text = $(this).text();
+            var opt = document.createElement('option');
+            $(opt).text(permission_text);
+            $(opt).val(permission_value);
+            $("select[id='id-permission-to']").append(opt);
+            $(this).remove();
+        });
+        $("select[id='id-permission-to']").delegate("option", "dblclick", function () {
+            var permission_value = $(this).val();
+            var permission_text = $(this).text();
+            var opt = document.createElement('option');
+            $(opt).text(permission_text);
+            $(opt).val(permission_value);
+            $("select[id='id-permission-from']").append(opt);
+            $(this).remove();
+        });
+        $("#form").submit(function () {
+            $("select[tag='chosen-list']").children().each(function () {
+                console.log($(this));
+                $(this).prop("selected", true);
+            });
+        });
+    </script>
+{% endblock %}

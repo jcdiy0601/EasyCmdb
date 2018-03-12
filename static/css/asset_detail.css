@@ -1,0 +1,101 @@
+.dotted {
+    border-top: 1px dotted #ddd;
+}
+
+.text-left {
+    text-align: left !important;
+}
+
+.guige {
+
+}
+
+.guige-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.guige-table .title {
+    background: #f5fafe;
+    text-align: left;
+    font-weight: bold;
+    line-height: 32px;
+    height: 32px;
+    font-family: "微软雅黑";
+    border-right: 1px solid #dcdcdc;
+    border-left: 2px solid #0488cd;
+}
+
+.guige-table td, .content .guige-table th {
+    border: 1px solid #dcdcdc;
+    line-height: 30px;
+    height: 30px;
+    padding: 0 10px;
+    border-top: 0;
+}
+
+.guige-table .body-left {
+    width: 126px;
+    font-weight: normal;
+    text-align: right;
+    color: #666;
+}
+
+.guige-table .body-right {
+    color: #333;
+}
+
+.handle_log {
+        font-size: 13px !important;
+        font-family: Tahoma, Geneva, Helvetica, sans-serif !important;
+    }
+
+.time {
+    padding: 10px;
+    border: 1px solid #ddd;
+    position: absolute;
+    width: 150px;
+    left: -190px;
+    box-shadow: 0 2px 8px 2px rgba(0, 0, 0, 0.12);
+}
+
+.record {
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin: 17px;
+    min-height: 40px;
+    box-shadow: 0 2px 8px 2px rgba(0, 0, 0, 0.12);
+}
+
+.record .auther {
+    text-align: right;
+    padding: 5px 0;
+    color: #9E9C9C;
+}
+
+.record-arrow {
+    position: absolute;
+    width: 24px;
+    height: 14px;
+    background: url(/static/img/bg_dot_left3.png) no-repeat;
+    top: 15px;
+    left: -6px;
+    text-indent: -9999em;
+}
+
+.tag {
+    padding: 6px;
+    background-color: #00a2ca;
+    margin: 10px;
+    color: white;
+    cursor: pointer;
+    border-radius: 10px;
+}
+
+.add-tag {
+    margin: 10px;
+    color: #00a2ca;
+    cursor: pointer;
+    font-size: 16px;
+}

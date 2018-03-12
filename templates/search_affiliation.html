@@ -1,0 +1,40 @@
+{% extends 'index.html' %}
+
+{% block page-title %}
+    查询虚拟机归属
+{% endblock %}
+
+{% block page-path %}
+    <li><a href="{% url 'index' %}">首页</a></li>
+    <li><a href="{% url 'search_affiliation' %}">查询虚拟机归属页</a></li>
+{% endblock %}
+
+{% block page-content %}
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">主机归属查询</h3>
+        </div>
+        <div class="panel-body">
+            <form method="post" action="{% url 'search_affiliation' %}">
+                {% csrf_token %}
+                <input type="text" id="ip" class="col-lg-5 form-control" placeholder="输入虚拟机IP，多IP查询以,号分割">
+                <input type="button" id="post_btn" class="btn btn-success pull-right" value="查询">
+            </form>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-heading">
+            <h3 class="panel-title">查询结果</h3>
+        </div>
+        <div class="panel-body">
+            <ul id="task_result_container">
+
+            </ul>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script src="/static/js/search_affiliation.js"></script>
+{% endblock %}

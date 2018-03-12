@@ -1,0 +1,407 @@
+{% extends 'index.html' %}
+{% load asset_detail_tag %}
+
+{% block css %}
+    <link href="/static/css/asset_detail.css" rel="stylesheet">
+    <link href="/static/css/commons.css" rel="stylesheet">
+{% endblock %}
+
+{% block page-title %}
+    资产管理
+{% endblock %}
+
+{% block page-path %}
+    <li><a href="{% url 'index' %}">首页</a></li>
+    <li><a href="{% url 'asset' %}">资产管理</a></li>
+    <li><a href="{% url 'asset_detail' asset_type asset_id %}">资产详情</a></li>
+{% endblock %}
+
+{% block page-content %}
+    <!--Page content-->
+    <!--===================================================-->
+    <!--Default Tabs (Left Aligned)-->
+    <!--===================================================-->
+    <div class="tab-base">
+
+        <!--Nav Tabs-->
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a data-toggle="tab" href="#demo-lft-tab-1"><i class="fa fa-magic"></i>基本信息</a>
+            </li>
+            <li>
+                <a data-toggle="tab" href="#demo-lft-tab-2"><i class="fa fa-thumbs-up"></i>硬件信息</a>
+            </li>
+            <li>
+                <a data-toggle="tab" href="#demo-lft-tab-3"><i class="fa fa-heart"></i>变更记录</a>
+            </li>
+        </ul>
+
+        <!--Tabs Content-->
+        <div class="tab-content">
+            <div id="demo-lft-tab-1" class="tab-pane fade active in">
+                <div class="form-horizontal clearfix" style="margin-top:20px;">
+                    <div class="form-group col-md-6">
+                        <div class="col-md-4 control-label">类型：</div>
+                        <div class="col-md-7 control-label text-left">{% display_asset_type response.data %}</div>
+                    </div>
+                    {% if response.data.asset_type == "hardwareserver" %}
+                        <div class="form-group col-md-6">
+                            <div class="col-md-4 control-label">主机名：</div>
+                            <div class="col-md-7 control-label text-left">
+                                {% if response.data.hardwareserver.hostname %}
+                                    {{ response.data.hardwareserver.hostname }}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="col-md-4 control-label">管理IP：</div>
+                            <div class="col-md-7 control-label text-left">{{ response.data.hardwareserver.manager_ip }}</div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="col-md-4 control-label">SN号：</div>
+                            <div class="col-md-7 control-label text-left">{{ response.data.hardwareserver.sn }}</div>
+                        </div>
+                    {% endif %}
+                    {% if response.data.asset_type == "softwareserver" %}
+                        <div class="form-group col-md-6">
+                            <div class="col-md-4 control-label">主机名：</div>
+                            <div class="col-md-7 control-label text-left">{{ response.data.softwareserver.hostname }}</div>
+                        </div>
+                    {% endif %}
+                    <div class="form-group col-md-6">
+                        <div class="col-md-4 control-label">状态：</div>
+                        <div class="col-md-7 control-label text-left">{% display_asset_status response.data response.data.asset_status %}</div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-4 control-label">采集方式：</div>
+                        <div class="col-md-7 control-label text-left">{% display_asset_auto response.data %}</div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-4 control-label">更新时间：</div>
+                        <div class="col-md-7 control-label text-left">{{ response.data.latest_date|date:"Y-m-d" }}</div>
+                    </div>
+                    <div class="dotted col-md-12"></div>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-4 control-label">机房：</div>
+                        <div class="col-md-7 control-label text-left">{{ response.data.idc.name }}</div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-4 control-label">楼层：</div>
+                        <div class="col-md-7 control-label text-left">{{ response.data.idc.floor }}</div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-4 control-label">机柜：</div>
+                        <div class="col-md-7 control-label text-left">{{ response.data.cabinet_num }}</div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-4 control-label">柜上位置：</div>
+                        <div class="col-md-7 control-label text-left">{{ response.data.cabinet_order }}</div>
+                    </div>
+                    {% if response.data.tag %}
+                        <div class="dotted col-md-12"></div>
+                        <div class="form-group col-md-6">
+                            <div class="col-md-4 control-label">标签：</div>
+                            <div class="col-md-7 control-label text-left">
+                                {% for tag_obj in response.data.tag.all %}
+                                    {% if forloop.last %}
+                                        {{ tag_obj.name }}
+                                    {% else %}
+                                        {{ tag_obj.name }},
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if response.data.business_unit %}
+                        <div class="dotted col-md-12"></div>
+                        <div class="form-group col-md-6">
+                            <div class="col-md-4 control-label">业务线：</div>
+                            <div class="col-md-7 control-label text-left">{{ response.data.business_unit.name }}</div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group col-md-6">
+                                <div class="col-md-4 control-label">业务联系人：</div>
+                                <div class="col-md-8 control-label text-left">{{ response.data.business_unit.contact.name }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group col-md-6">
+                                <div class="col-md-4 control-label">邮箱：</div>
+                                <div class="col-md-8 control-label text-left">{{ response.data.business_unit.contact.email }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group col-md-6">
+                                <div class="col-md-4 control-label">电话：</div>
+                                <div class="col-md-8 control-label text-left">{{ response.data.business_unit.contact.phone }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div id="demo-lft-tab-2" class="tab-pane fade">
+                {% if asset_type == "hardwareserver" %}
+                    <div class="guige">
+                        <table class="guige-table">
+                            <tbody>
+                            <tr>
+                                <th colspan="6" class="title f14 th"><span class="padding-l-8">基础信息</span>
+                                </th>
+                            </tr>
+                            <tr>
+                                <td>名称</td>
+                                <td colspan="5">值</td>
+                            </tr>
+                            <tr>
+                                <td>系统版本</td>
+                                <td colspan="5">
+                                    {% if response.data.hardwareserver.os_version %}
+                                        {{ response.data.hardwareserver.os_version }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>主板SN号</td>
+                                <td colspan="5">
+                                    {% if response.data.hardwareserver.sn %}
+                                        {{ response.data.hardwareserver.sn }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>快速服务号</td>
+                                <td colspan="5">
+                                    {% if response.data.hardwareserver.fast_server_number %}
+                                        {{ response.data.hardwareserver.fast_server_number }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>主板型号</td>
+                                <td colspan="5">
+                                    {% if response.data.hardwareserver.model %}
+                                        {{ response.data.hardwareserver.model }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>主板厂商</td>
+                                <td colspan="5">
+                                    {% if response.data.hardwareserver.manufacturer %}
+                                        {{ response.data.hardwareserver.manufacturer }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>CPU型号</td>
+                                <td colspan="5">{{ response.data.cpu.cpu_model }}</td>
+                            </tr>
+                            <tr>
+                                <td>CPU个数</td>
+                                <td colspan="5">{{ response.data.cpu.cpu_physical_count }}</td>
+                            </tr>
+                            <tr>
+                                <td>CPU核数</td>
+                                <td colspan="5">{{ response.data.cpu.cpu_count }}</td>
+                            </tr>
+                            <!-- 网卡信息开始 -->
+                            <tr>
+                                <th colspan="6" class="title f14 th"><span class="padding-l-8">网卡信息</span>
+                                </th>
+                            </tr>
+                            <tr>
+                                <td>插槽</td>
+                                <td colspan="5">MAC地址</td>
+                            </tr>
+                            {% display_hardware_server_asset_nic response.data %}
+                            <!-- 网卡信息结束 -->
+
+                            <!-- 硬盘信息开始 -->
+                            <tr>
+                                <th colspan="6" class="title f14" style="border-left:2px solid #0488cd;">
+                                    <span class="padding-l-8">硬盘信息</span>
+                                </th>
+                            </tr>
+                            <tr>
+                                <td>插槽</td>
+                                <td>硬盘SN号</td>
+                                <td>硬盘厂商</td>
+                                <td>硬盘型号</td>
+                                <td>硬盘转速</td>
+                                <td>硬盘容量</td>
+                            </tr>
+                            {% display_hardware_server_asset_disk response.data %}
+                            <!-- 硬盘信息结束 -->
+
+                            <!-- 内存信息开始 -->
+                            <tr>
+                                <th colspan="6" class="title f14" style="border-left:2px solid #0488cd;">
+                                    <span class="padding-l-8">内存信息</span>
+                                </th>
+                            </tr>
+                            <tr>
+                                <td>插槽</td>
+                                <td>内存SN号</td>
+                                <td>内存厂商</td>
+                                <td>内存型号</td>
+                                <td>内存频率</td>
+                                <td>内存容量</td>
+                            </tr>
+                            {% display_hardware_server_asset_ram response.data %}
+                            <!-- 内存信息结束 -->
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+                {% if asset_type == "softwareserver" %}
+                    <div class="guige">
+                        <table class="guige-table">
+                            <tbody>
+                            <tr>
+                                <th colspan="6" class="title f14 th"><span class="padding-l-8">基础信息</span>
+                                </th>
+                            </tr>
+                            <tr>
+                                <td>名称</td>
+                                <td colspan="5">值</td>
+                            </tr>
+                            <tr>
+                                <td>系统版本</td>
+                                <td colspan="5">
+                                    {% if response.data.softwareserver.os_version %}
+                                        {{ response.data.softwareserver.os_version }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>CPU型号</td>
+                                <td colspan="5">{{ response.data.cpu.cpu_model }}</td>
+                            </tr>
+                            <tr>
+                                <td>CPU个数</td>
+                                <td colspan="5">{{ response.data.cpu.cpu_physical_count }}</td>
+                            </tr>
+                            <tr>
+                                <td>CPU核数</td>
+                                <td colspan="5">{{ response.data.cpu.cpu_count }}</td>
+                            </tr>
+                            <!-- 网卡信息开始 -->
+                            <tr>
+                                <th colspan="6" class="title f14 th"><span class="padding-l-8">网卡信息</span>
+                                </th>
+                            </tr>
+                            <tr>
+                                <td>名称</td>
+                                <td colspan="2">IP地址</td>
+                                <td colspan="2">MAC地址</td>
+                            </tr>
+                            {% display_software_server_asset_nic response.data %}
+                            <!-- 网卡信息结束 -->
+
+                            <!-- 硬盘信息开始 -->
+                            <tr>
+                                <th colspan="6" class="title f14" style="border-left:2px solid #0488cd;">
+                                    <span class="padding-l-8">硬盘信息</span>
+                                </th>
+                            </tr>
+                            <tr>
+                                <td colspan="5">硬盘总容量</td>
+                            </tr>
+                            <tr>
+                                <td colspan="5">{{ response.data.disk_set.first.total_capacity }}G</td>
+                            </tr>
+                            <!-- 硬盘信息结束 -->
+
+                            <!-- 内存信息开始 -->
+                            <tr>
+                                <th colspan="6" class="title f14" style="border-left:2px solid #0488cd;">
+                                    <span class="padding-l-8">内存信息</span>
+                                </th>
+                            </tr>
+                            <tr>
+                                <td colspan="5">内存总容量</td>
+                            </tr>
+                            <tr>
+                                <td colspan="5">{{ response.data.ram_set.first.total_capacity }}M</td>
+                            </tr>
+                            <!-- 内存信息结束 -->
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
+            <div id="demo-lft-tab-3" class="tab-pane fade">
+                <div class="clearfix handle_log">
+                    <div class="left" style="width:240px;height:200px;">&nbsp;</div>
+                    <div class="left clearfix" style="border-left:2px dashed #ddd;width:70%;">
+                        {% if response.status %}
+                            {% for item in response.data.assetrecord_set.all %}
+                                <div style="position:relative;">
+                                    <div class="time">{{ item.create_at |date:"Y-m-d H:i:s" }}</div>
+                                    <div class="record-arrow"></div>
+                                    <div class="record">
+                                        {{ item.content }}
+                                        <div class="auther">
+                                            <span><i class="fa fa-user"></i></span>
+                                            {% if  item.creator.name %}
+                                                <span>{{ item.creator.name }}</span>
+                                            {% else %}
+                                                <span>自动采集</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            {{ response.message }}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="change-speed-div" class="bootbox modal fade in" tabindex="-1" role="dialog" aria-hidden="false"
+         style="display: none; padding-right: 17px;">
+        <div class="modal-backdrop fade in" style="height: 100%;"></div>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button id="close" type="button" class="bootbox-close-button close" data-dismiss="modal" aria-hidden="true">×
+                    </button>
+                    <h4 class="modal-title">修改硬盘转速</h4></div>
+                <div class="modal-body">
+                    <div class="bootbox-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <form id="change-speed-form" class="form-horizontal" method="post">
+                                    {% csrf_token %}
+                                    <div class="form-group"><label class="col-md-4 control-label"
+                                                                   for="inputspeed">转速(千转/分)</label>
+                                        <div class="col-md-4"><input id="inputspeed" name="speed" type="text"
+                                                                     placeholder="请输入10/15等数字"
+                                                                     class="form-control input-md">
+                                            <span id="error-tag" style="color: red"></span>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="confirm" type="button" class="btn btn-success">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--===================================================-->
+    <!--End Default Tabs (Left Aligned)-->
+
+    <!--===================================================-->
+    <!--End page content-->
+{% endblock %}
+
+{% block js %}
+    <script src="/static/js/change_speed.js"></script>
+{% endblock %}

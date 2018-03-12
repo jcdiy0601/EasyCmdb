@@ -1,0 +1,32 @@
+{% extends 'index.html' %}
+
+{% block page-title %}
+    所有虚拟机归属
+{% endblock %}
+
+{% block page-path %}
+    <li><a href="{% url 'index' %}">首页</a></li>
+    <li><a href="{% url 'show_all_affiliation' %}">所有虚拟机归属页</a></li>
+{% endblock %}
+
+{% block page-content %}
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">虚拟机归属</h3>
+        </div>
+        <div class="panel-body">
+            {% for esxi_ip, ip_list in result.items %}
+                <h3>esxi服务器IP: {{ esxi_ip }} [{{ ip_list|length }}台虚拟机]</h3>
+                <pre>
+                {% for ip in ip_list %}
+                    虚拟机IP: {{ ip }}
+                {% endfor %}
+                </pre>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+
+{% endblock %}

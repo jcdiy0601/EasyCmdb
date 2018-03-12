@@ -1,0 +1,153 @@
+{% extends 'index.html' %}
+
+{% block css %}
+    <link href="/static/css/commons.css" rel="stylesheet">
+{% endblock %}
+
+{% block page-title %}
+    标签管理
+{% endblock %}
+
+{% block page-path %}
+    <li><a href="{% url 'index' %}">首页</a></li>
+    <li><a href="{% url 'tag' %}">标签管理</a></li>
+{% endblock %}
+
+{% block page-content %}
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">标签信息表</h3>
+        </div>
+        <div class="panel-body">
+            <!--查询开始-->
+            <div class="search-area">
+                <div class="col-lg-offset-10 do-submit">
+                    <a id="search_condition_submit" class="btn btn-primary no-radius">
+                        <i class="fa fa-search" aria-hidden="true"></i> 搜索
+                    </a>
+                </div>
+                <div id="search_conditions" class="col-md-offset-2 col-md-8">
+                    <div class="condition">
+                        <div class="icons">
+                            <a class="btn btn-default no-radius" onclick="$.AddSearchCondition(this)">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                        <div class="inputs">
+                            <div class="input-group">
+                                <div id="search_condition" init="false" class="input-group-btn">
+                                    <label type="button" class="btn btn-default no-radius"
+                                           style="width: 100px;">&nbsp;</label>
+                                    <button type="button"
+                                            class="btn btn-default dropdown-toggle no-border-r"
+                                            data-toggle="dropdown" aria-haspopup="true"
+                                            aria-expanded="false"><span
+                                            class="caret"></span></button>
+                                    <ul class="change-search-condition dropdown-menu">
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--查询结束-->
+
+            <!--操作开始-->
+            <div class="function-area">
+                <div class="btn-group btn-group-sm custom-btn-group">
+                    <a id="check_all" class="btn btn-default no-radius"><i class="fa fa-check-square"
+                                                                           aria-hidden="true"></i>
+                        全选</a>
+                    <a id="check_cancel" class="btn btn-default no-radius"><i
+                            class="fa fa-minus-square" aria-hidden="true"></i> 取消</a>
+                    <a id="check_reverse" class="btn btn-default no-radius"><i
+                            class="fa fa-check-square-o" aria-hidden="true"></i> 反选</a>
+                    <a class="btn btn-default no-radius" href="{% url 'tag_add' %}"><i
+                            class="fa fa-plus-square" aria-hidden="true"></i> 添加</a>
+                    <a id="do_delete" class="btn btn-default no-radius"><i class="fa fa-trash"
+                                                                           aria-hidden="true"></i>
+                        删除</a>
+                    <a id="edit_mode_target" class="btn btn-default no-radius"><i
+                            class="fa fa-pencil-square" aria-hidden="true"></i>
+                        <span>进入编辑模式</span></a>
+                    <a id="do_save" class="btn btn-default no-radius"><i class="fa fa-floppy-o"
+                                                                         aria-hidden="true"></i> 保存</a>
+                    <a id="do_refresh" class="btn btn-default no-radius"><i class="fa fa-refresh"
+                                                                            aria-hidden="true"></i>
+                        刷新</a>
+                    <a id="handle_status" class="btn no-radius" tabindex="0" role="button"
+                       data-toggle="manual"
+                       data-trigger="focus" data-container="body" data-html="true"
+                       data-placement="bottom" title="详细"
+                       data-content="" style="display: none"></a>
+                </div>
+            </div>
+            <!--操作结束-->
+
+            <!--表单开始-->
+            <table width="100%" class="table table-bordered"
+                   id="dataTables-example" style="margin-top: 5px">
+                <thead id="tableHead">
+                <tr>
+
+                </tr>
+                </thead>
+                <tbody id="tableBody">
+
+                </tbody>
+            </table>
+            <!--表单结束-->
+
+            <!--页码开始-->
+            <div>
+                <div class="right">
+                    <ul id="pager" class="pagination pagination-sm no-margin">
+
+                    </ul>
+                </div>
+            </div>
+            <!--页面结束-->
+
+            <div class="clearfix"></div>
+        </div>
+    </div>
+
+    <!-- 删除层开始 -->
+    <div id="modal_delete" class="alert alert-danger alert-dismissible fade in modal-delete hide"
+         role="alert">
+        <button type="button" class="close" aria-label="Close" onclick="$.Hide('#shade,#modal_delete');">
+            <span></span>
+        </button>
+        <h4>确定删除？</h4>
+        <p>相关内容将全部被删除！<br/> &nbsp;</p>
+        <p style="text-align: right">
+            <button type="button" class="btn btn-default" id="do_delete_confirm">确定删除</button>
+            <button type="button" class="btn btn-default" onclick="$.Hide('#shade,#modal_delete');">取消
+            </button>
+        </p>
+    </div>
+    <!-- 删除层结束 -->
+
+    <!-- 遮罩层开始 -->
+    <div id='shade' class='shade hide'></div>
+    <!-- 遮罩层结束 -->
+
+    <!-- 加载层开始 -->
+    <div id='loading' class='loading hide'></div>
+    <!-- 加载层结束 -->
+{% endblock %}
+
+{% block js %}
+    <script src="/static/js/general.js"></script>
+    <script>
+        // 显示数据及查询
+        $(function () {
+            $.GeneralData('/cmdb_web/tag_json.html', '/cmdb_web/delete_tag_json.html', '/cmdb_web/update_tag_json.html');
+        });
+        // 跳转分页
+        function ChangePage(pageNum) {
+            $.changePage(pageNum);
+        }
+    </script>
+{% endblock %}
