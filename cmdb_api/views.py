@@ -22,6 +22,9 @@ def asset_api(request):
         server_info = json.loads(server_info)
         hostname = server_info.get('hostname', None)
         client_type = server_info['client_type']
+        if client_type == 'snmp':
+            device_type = server_info['device_type']
+            manufacturer = server_info['manufacturer']
         # 如果资产由agent获取
         if client_type == 'agent':
             ret = {'code': 201, 'message': '[%s]更新完成' % hostname}
@@ -30,7 +33,7 @@ def asset_api(request):
                 ret['code'] = 404
                 ret['message'] = '[%s]资产不存在' % hostname
                 return JsonResponse(ret)
-            for k, v in config.PLUGINS_DICT.items():
+            for k, v in config.PLUGINS_AGENT_DICT.items():
                 module_path, cls_name = v.rsplit('.', 1)
                 cls = getattr(importlib.import_module(module_path), cls_name)
                 response = cls.process(server_obj, server_info, None)
@@ -42,23 +45,44 @@ def asset_api(request):
             return JsonResponse(ret)
         # 如果资产由snmp获取
         elif client_type == 'snmp':
-            sn = server_info['main_board']['data']['sn']
-            ret = {'code': 201, 'message': '[%s]更新完成' % sn}
-            server_obj = models.HardwareServer.objects.filter(sn=sn).select_related('asset').first()
-            if not server_obj:
-                ret['code'] = 404
-                ret['message'] = '[%s]资产不存在' % sn
+            if device_type == 'server':     # 硬件服务器
+                sn = server_info['main_board']['data']['sn']
+                ret = {'code': 201, 'message': '[%s]更新完成' % sn}
+                server_obj = models.HardwareServer.objects.filter(sn=sn).select_related('asset').first()
+                if not server_obj:
+                    ret['code'] = 404
+                    ret['message'] = '[%s]资产不存在' % sn
+                    return JsonResponse(ret)
+                server_plugin_dict = config.PLUGINS_SNMP_DICT[device_type]
+                for k, v in server_plugin_dict.items():
+                    module_path, cls_name = v.rsplit('.', 1)
+                    cls = getattr(importlib.import_module(module_path), cls_name)
+                    response = cls.process(server_obj, server_info, None)
+                    if not response.status:
+                        ret['code'] = 400
+                        ret['message'] = '[%s]资产更新异常' % sn
+                    if hasattr(cls, 'update_last_time'):
+                        cls.update_last_time(server_obj)
                 return JsonResponse(ret)
-            for k, v in config.PLUGINS_DICT.items():
-                module_path, cls_name = v.rsplit('.', 1)
-                cls = getattr(importlib.import_module(module_path), cls_name)
-                response = cls.process(server_obj, server_info, None)
-                if not response.status:
-                    ret['code'] = 400
-                    ret['message'] = '[%s]资产更新异常' % sn
-                if hasattr(cls, 'update_last_time'):
-                    cls.update_last_time(server_obj)
-            return JsonResponse(ret)
+            elif device_type == 'switch':
+                sn = server_info['basic']['data']['sn']
+                ret = {'code': 201, 'message': '[%s]更新完成' % sn}
+                device_obj = models.NetworkDevice.objects.filter(sn=sn).select_related('asset').first()
+                if not device_obj:
+                    ret['code'] = 404
+                    ret['message'] = '[%s]资产不存在' % sn
+                    return JsonResponse(ret)
+                device_plugin_dict = config.PLUGINS_SNMP_DICT[device_type]
+                for k, v in device_plugin_dict.items():
+                    module_path, cls_name = v.rsplit('.', 1)
+                    cls = getattr(importlib.import_module(module_path), cls_name)
+                    response = cls.process(device_obj, server_info, None)
+                    if not response.status:
+                        ret['code'] = 400
+                        ret['message'] = '[%s]资产更新异常' % sn
+                    if hasattr(cls, 'update_last_time'):
+                        cls.update_last_time(device_obj)
+                return JsonResponse(ret)
     # 如果请求为get
     response = asset.get_untreated_servers()
     return JsonResponse(response.__dict__)

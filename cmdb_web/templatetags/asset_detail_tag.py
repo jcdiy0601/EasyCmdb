@@ -126,3 +126,25 @@ def display_hardware_server_asset_ram(asset_obj):
         temp = temp + '<td>' + '%sM' % str(item.capacity) + '</td>'
         temp = temp + '</tr>'
     return mark_safe(temp)
+
+
+@register.simple_tag
+def display_hardware_server_manufacturer(asset_obj, manufacturer_id):
+    """显示硬件服务器主板厂商"""
+    manufacturer = ''
+    for item in asset_obj.hardwareserver.manufacturer_choices:
+        if item[0] == manufacturer_id:
+            manufacturer = item[1]
+            break
+    return mark_safe(manufacturer)
+
+
+@register.simple_tag
+def display_network_device_device_type(asset_obj, device_type_id):
+    """显示网络设备设备类型"""
+    device_type = ''
+    for item in asset_obj.networkdevice.device_type_choices:
+        if item[0] == device_type_id:
+            device_type = item[1]
+            break
+    return mark_safe(device_type)

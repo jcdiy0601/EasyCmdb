@@ -62,6 +62,30 @@
                             <div class="col-md-7 control-label text-left">{{ response.data.hardwareserver.sn }}</div>
                         </div>
                     {% endif %}
+                    {% if response.data.asset_type == "networkdevice" %}
+                        <div class="form-group col-md-6">
+                            <div class="col-md-4 control-label">设备名：</div>
+                            <div class="col-md-7 control-label text-left">
+                                {% if response.data.networkdevice.device_name %}
+                                    {{ response.data.networkdevice.device_name }}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="col-md-4 control-label">设备类型：</div>
+                            <div class="col-md-7 control-label text-left">
+                                {% display_network_device_device_type response.data response.data.networkdevice.device_type %}
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="col-md-4 control-label">管理IP：</div>
+                            <div class="col-md-7 control-label text-left">{{ response.data.networkdevice.manager_ip }}</div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="col-md-4 control-label">SN号：</div>
+                            <div class="col-md-7 control-label text-left">{{ response.data.networkdevice.sn }}</div>
+                        </div>
+                    {% endif %}
                     {% if response.data.asset_type == "softwareserver" %}
                         <div class="form-group col-md-6">
                             <div class="col-md-4 control-label">主机名：</div>
@@ -188,7 +212,7 @@
                                 <td>主板厂商</td>
                                 <td colspan="5">
                                     {% if response.data.hardwareserver.manufacturer %}
-                                        {{ response.data.hardwareserver.manufacturer }}
+                                        {% display_hardware_server_manufacturer response.data response.data.hardwareserver.manufacturer %}
                                     {% endif %}
                                 </td>
                             </tr>
@@ -325,6 +349,54 @@
                                 <td colspan="5">{{ response.data.ram_set.first.total_capacity }}M</td>
                             </tr>
                             <!-- 内存信息结束 -->
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+                {% if asset_type == "networkdevice" %}
+                    <div class="guige">
+                        <table class="guige-table">
+                            <tbody>
+                            <tr>
+                                <th colspan="6" class="title f14 th"><span class="padding-l-8">基础信息</span>
+                                </th>
+                            </tr>
+                            <tr>
+                                <td>名称</td>
+                                <td colspan="5">值</td>
+                            </tr>
+                            <tr>
+                                <td>型号</td>
+                                <td colspan="5">
+                                    {% if response.data.networkdevice.model %}
+                                        {{ response.data.networkdevice.model }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>接口个数</td>
+                                <td colspan="5">
+                                    {% if response.data.networkdevice.port_number %}
+                                        {{ response.data.networkdevice.port_number }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>运行时间(天)</td>
+                                <td colspan="5">
+                                    {% if response.data.networkdevice.run_time %}
+                                        {{ response.data.networkdevice.run_time }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>基本信息</td>
+                                <td colspan="5">
+                                    {% if response.data.networkdevice.basic_info %}
+                                        {{ response.data.networkdevice.basic_info }}
+                                    {% endif %}
+                                </td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>

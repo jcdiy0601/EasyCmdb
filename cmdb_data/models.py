@@ -5,9 +5,7 @@ from django.contrib.auth.models import (
 
 
 class UserProfileManager(BaseUserManager):
-    """
-    用户表
-    """
+    """用户表"""
     def create_user(self, email, name, phone, password=None):
         if not email:
             raise ValueError('用户必须有一个email地址')
@@ -87,9 +85,7 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
 
 
 class BusinessUnit(models.Model):
-    """
-    业务线表
-    """
+    """业务线表"""
     name = models.CharField(verbose_name='业务线名称', max_length=64, unique=True)
     contact = models.ForeignKey(verbose_name='所属业务联系人', to='UserProfile', related_name='c')
     manager = models.ForeignKey(verbose_name='所属系统管理员', to='UserProfile', related_name='m')
@@ -109,9 +105,7 @@ class BusinessUnit(models.Model):
 
 
 class IDC(models.Model):
-    """
-    IDC表
-    """
+    """IDC表"""
     name = models.CharField(verbose_name='机房', max_length=64)
     floor = models.IntegerField(verbose_name='楼层', default=1)
 
@@ -133,9 +127,7 @@ class IDC(models.Model):
 
 
 class Tag(models.Model):
-    """
-    标签表
-    """
+    """标签表"""
     name = models.CharField(verbose_name='标签名称', max_length=64, unique=True)
     creator = models.ForeignKey(verbose_name='所属创建人', to='UserProfile')
     create_date = models.DateField(verbose_name='创建时间', auto_now_add=True)
@@ -155,14 +147,13 @@ class Tag(models.Model):
 
 
 class Asset(models.Model):
-    """
-    资产表
-    """
+    """资产表"""
     asset_type_choices = (
         ('hardwareserver', '硬件服务器'),
         ('softwareserver', '软件服务器'),
+        ('networkdevice', '网络设备'),
     )
-    asset_type = models.CharField(verbose_name='资产类型', choices=asset_type_choices, max_length=64, default='server')
+    asset_type = models.CharField(verbose_name='资产类型', choices=asset_type_choices, max_length=64, default='softwareserver')
     asset_status_choices = (
         ('online', '在线'),
         ('offline', '离线'),
@@ -190,10 +181,12 @@ class Asset(models.Model):
             ('can_show_add_asset', '可以访问添加资产页面'),
             ('can_show_add_hardware_server', '可以访问添加硬件服务器资产页面'),
             ('can_show_add_software_server', '可以访问添加软件件服务器资产页面'),
+            ('can_show_add_network_device', '可以访问添加网络设备资产页面'),
             ('can_show_hand_add_software_server', '可以访问添加手工录入软件服务器资产页面'),
             ('can_add_hardware_server', '可以添加硬件服务器资产'),
             ('can_add_software_server', '可以添加软件服务器资产'),
-            ('can_hand_add_software_server', '可以添加手工路径软件服务器资产'),
+            ('can_add_network_device', '可以添加网络设备资产'),
+            ('can_hand_add_software_server', '可以添加手工录入软件服务器资产'),
             ('can_show_edit_asset', '可以访问资产编辑页面'),
             ('can_edit_asset', '可以编辑资产')
         )
@@ -203,14 +196,15 @@ class Asset(models.Model):
 
 
 class HardwareServer(models.Model):
-    """
-    硬件服务器表
-    """
+    """硬件服务器表"""
     asset = models.OneToOneField(verbose_name='所属资产', to='Asset', on_delete=models.CASCADE)
     hostname = models.CharField(verbose_name='主机名', max_length=128, null=True, blank=True)
     sn = models.CharField(verbose_name='SN号', max_length=64, unique=True)
     fast_server_number = models.CharField(verbose_name='快速服务号', max_length=64, null=True, blank=True)
-    manufacturer = models.CharField(verbose_name='制造商', max_length=64, null=True, blank=True)
+    manufacturer_choices = (
+        ('dell', '戴尔'),
+    )
+    manufacturer = models.CharField(verbose_name='制造商', max_length=64, choices=manufacturer_choices, default='dell')
     model = models.CharField(verbose_name='型号', max_length=64, null=True, blank=True)
     manager_ip = models.GenericIPAddressField(verbose_name='管理IP', unique=True)
     os_version = models.CharField(verbose_name='系统版本', max_length=64, null=True, blank=True)
@@ -225,9 +219,7 @@ class HardwareServer(models.Model):
 
 
 class SoftwareServer(models.Model):
-    """
-    软件服务器表
-    """
+    """软件服务器表"""
     asset = models.OneToOneField(verbose_name='所属资产', to='Asset', on_delete=models.CASCADE)
     hostname = models.CharField(verbose_name='主机名', max_length=128, unique=True)
     os_version = models.CharField(verbose_name='系统版本', max_length=64, null=True, blank=True)
@@ -241,11 +233,37 @@ class SoftwareServer(models.Model):
         return self.hostname
 
 
-class CPU(models.Model):
-    """
-    CPU组件表
-    """
+class NetworkDevice(models.Model):
+    """网络设备表"""
+    asset = models.OneToOneField(verbose_name='所属资产', to='Asset', on_delete=models.CASCADE)
+    sn = models.CharField(verbose_name='SN号', max_length=64, unique=True)
+    manager_ip = models.GenericIPAddressField(verbose_name='管理IP', unique=True)
+    port_number = models.IntegerField(verbose_name='接口数', blank=True, null=True)
+    run_time = models.IntegerField(verbose_name='运行时常', blank=True, null=True)
+    device_name = models.CharField(verbose_name='设备名称', max_length=64, blank=True, null=True)
+    device_type_choices = (
+        ('switch', '交换机'),
+        ('router', '路由器'),
+    )
+    device_type = models.CharField(verbose_name='设备类型', max_length=64, choices=device_type_choices, default='switch')
+    manufacturer_choices = (
+        ('h3c', '华三'),
+    )
+    manufacturer = models.CharField(verbose_name='制造商', max_length=64, choices=manufacturer_choices, default='h3c')
+    model = models.CharField(verbose_name='型号', max_length=64, null=True, blank=True)
+    basic_info = models.TextField(verbose_name='基本信息', null=True, blank=True)
+    create_at = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
+    latest_date = models.DateField(verbose_name='更新时间', auto_now=True)
 
+    class Meta:
+        verbose_name_plural = '网络设备表'
+
+    def __str__(self):
+        return self.device_name
+
+
+class CPU(models.Model):
+    """CPU组件表"""
     asset = models.OneToOneField(verbose_name='所属资产', to='Asset', on_delete=models.CASCADE)
     cpu_model = models.CharField(verbose_name='CPU型号', max_length=128, blank=True, null=True)
     cpu_physical_count = models.IntegerField(verbose_name='CPU物理个数', blank=True, null=True)
@@ -262,9 +280,7 @@ class CPU(models.Model):
 
 
 class RAM(models.Model):
-    """
-    内存组件表
-    """
+    """内存组件表"""
     asset = models.ForeignKey(verbose_name='所属资产', to='Asset', on_delete=models.CASCADE)
     slot = models.CharField(verbose_name='插槽', max_length=64, blank=True, null=True)
     sn = models.CharField(verbose_name='SN号', max_length=128, blank=True, null=True)
@@ -288,9 +304,7 @@ class RAM(models.Model):
 
 
 class Disk(models.Model):
-    """
-    硬盘组件表
-    """
+    """硬盘组件表"""
 
     asset = models.ForeignKey(verbose_name='所属资产', to='Asset', on_delete=models.CASCADE)
     slot = models.CharField(verbose_name='插槽', max_length=64, blank=True, null=True)
@@ -315,9 +329,7 @@ class Disk(models.Model):
 
 
 class NIC(models.Model):
-    """
-    网卡组件表
-    """
+    """网卡组件表"""
     asset = models.ForeignKey(verbose_name='所属资产', to='Asset', on_delete=models.CASCADE)
     slot = models.CharField(verbose_name='插槽', max_length=64, blank=True, null=True)
     name = models.CharField(verbose_name='网卡名称', max_length=128, blank=True, null=True)
@@ -338,9 +350,7 @@ class NIC(models.Model):
 
 
 class AssetRecord(models.Model):
-    """
-    资产变更记录表,creator为空时，表示是资产汇报的数据。
-    """
+    """资产变更记录表,creator为空时，表示是资产汇报的数据。"""
     asset = models.ForeignKey(verbose_name='所属资产', to='Asset', on_delete=models.CASCADE)
     content = models.TextField(verbose_name='变更内容', null=True)
     creator = models.ForeignKey(verbose_name='变更来源', to='UserProfile', null=True, blank=True)
@@ -354,9 +364,7 @@ class AssetRecord(models.Model):
 
 
 class ErrorLog(models.Model):
-    """
-    错误日志,如：agent采集数据错误 或 运行错误
-    """
+    """错误日志,如：agent采集数据错误 或 运行错误"""
     asset = models.ForeignKey(verbose_name='所属资产', to='Asset', on_delete=models.CASCADE, null=True, blank=True)
     title = models.CharField(verbose_name='标题', max_length=64)
     content = models.TextField(verbose_name='内容')

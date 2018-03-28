@@ -43,7 +43,9 @@ def chart2(request):
     ret = {}
     hardware_server_count = models.HardwareServer.objects.all().count()
     software_server_count = models.SoftwareServer.objects.all().count()
+    switch_device_count = models.NetworkDevice.objects.filter(device_type='switch').all().count()
     ret['hardware_server_count'] = hardware_server_count
     ret['software_server_count'] = software_server_count
+    ret['switch_device_count'] = switch_device_count
     response.data = ret
     return JsonResponse(response.__dict__)

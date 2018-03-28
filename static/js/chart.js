@@ -88,6 +88,7 @@ function initChart() {
             if (response.status) {
                 var hardware_server_count = response.data.hardware_server_count;
                 var software_server_count = response.data.software_server_count;
+                var switch_device_count = response.data.switch_device_count;
 
                 var chart1; // 全局变量
                 chart1 = new Highcharts.Chart({
@@ -120,7 +121,7 @@ function initChart() {
                         enabled: false
                     },
                     title: {
-                        text: '服务器总览'
+                        text: '设备总览'
                     },
                     subtitle: {
                         text: ''
@@ -131,7 +132,7 @@ function initChart() {
                         }
                     },
                     xAxis: {
-                        categories: ['服务器类型']
+                        categories: ['设备类型']
                     },
                     yAxis: {
                         allowDecimals: true,
@@ -141,7 +142,8 @@ function initChart() {
                     },
                     series: [
                         {name: '硬件服务器', data: [hardware_server_count]},
-                        {name: '软件服务器', data: [software_server_count]}
+                        {name: '软件服务器', data: [software_server_count]},
+                        {name: '交换机', data: [switch_device_count]}
                     ]
                 });
             } else {

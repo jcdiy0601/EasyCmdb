@@ -37,7 +37,7 @@ class Asset(BaseServiceList):
             },
             {
                 'q': 'hostname',
-                'title': '主机名',
+                'title': '主机名/设备名',
                 'display': 1,
                 'text': {'content': '{n}', 'kwargs': {'n': '@hostname'}},
                 'attr': {}
@@ -104,8 +104,8 @@ class Asset(BaseServiceList):
         ]
         # 额外的查询
         extra_select = {
-            'hostname': 'select hostname from cmdb_data_hardwareserver where cmdb_data_hardwareserver.asset_id=cmdb_data_asset.id union all select hostname from cmdb_data_softwareserver where cmdb_data_softwareserver.asset_id=cmdb_data_asset.id',
-            'sn': 'select sn from cmdb_data_hardwareserver where cmdb_data_hardwareserver.asset_id=cmdb_data_asset.id'
+            'hostname': 'select hostname from cmdb_data_hardwareserver where cmdb_data_hardwareserver.asset_id=cmdb_data_asset.id union all select hostname from cmdb_data_softwareserver where cmdb_data_softwareserver.asset_id=cmdb_data_asset.id union all select device_name from cmdb_data_networkdevice where cmdb_data_networkdevice.asset_id=cmdb_data_asset.id',
+            'sn': 'select sn from cmdb_data_hardwareserver where cmdb_data_hardwareserver.asset_id=cmdb_data_asset.id union all select sn from cmdb_data_networkdevice where cmdb_data_networkdevice.asset_id=cmdb_data_asset.id'
         }
         super(Asset, self).__init__(condition_config, table_config, extra_select)
 

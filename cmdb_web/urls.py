@@ -19,6 +19,7 @@ urlpatterns = [
     url(r'^asset_add.html$', asset_view.asset_add, name='asset_add'),
     url(r'^asset_add_hardware_server.html$', asset_view.asset_add_hardware_server, name='asset_add_hardware_server'),
     url(r'^asset_add_software_server.html$', asset_view.asset_add_software_server, name='asset_add_software_server'),
+    url(r'^asset_add_network_device.html$', asset_view.asset_add_network_device, name='asset_add_network_device'),
     url(r'^asset_hand_add_software_server.html$', asset_view.asset_hand_add_software_server, name='asset_hand_add_software_server'),
     url(r'^asset_edit_(?P<asset_type>\w+)_(?P<asset_id>\d+).html$', asset_view.asset_edit, name='asset_edit'),
     # IDC
