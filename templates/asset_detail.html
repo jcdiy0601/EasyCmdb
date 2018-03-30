@@ -366,6 +366,12 @@
                                 <td colspan="5">值</td>
                             </tr>
                             <tr>
+                                <td>厂商</td>
+                                <td colspan="5">
+                                    {% display_network_device_manufacturer response.data response.data.networkdevice.manufacturer %}
+                                </td>
+                            </tr>
+                            <tr>
                                 <td>型号</td>
                                 <td colspan="5">
                                     {% if response.data.networkdevice.model %}
@@ -374,18 +380,16 @@
                                 </td>
                             </tr>
                             <tr>
+                                <td>SN号</td>
+                                <td colspan="5">
+                                    {{ response.data.networkdevice.sn }}
+                                </td>
+                            </tr>
+                            <tr>
                                 <td>接口个数</td>
                                 <td colspan="5">
                                     {% if response.data.networkdevice.port_number %}
                                         {{ response.data.networkdevice.port_number }}
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>运行时间(天)</td>
-                                <td colspan="5">
-                                    {% if response.data.networkdevice.run_time %}
-                                        {{ response.data.networkdevice.run_time }}
                                     {% endif %}
                                 </td>
                             </tr>

@@ -148,3 +148,14 @@ def display_network_device_device_type(asset_obj, device_type_id):
             device_type = item[1]
             break
     return mark_safe(device_type)
+
+
+@register.simple_tag
+def display_network_device_manufacturer(asset_obj, manufacturer_id):
+    """显示网络设备厂商"""
+    manufacturer = ''
+    for item in asset_obj.networkdevice.manufacturer_choices:
+        if item[0] == manufacturer_id:
+            manufacturer = item[1]
+            break
+    return mark_safe(manufacturer)

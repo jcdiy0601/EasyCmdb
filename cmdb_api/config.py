@@ -18,5 +18,8 @@ PLUGINS_SNMP_DICT = {
     },
     'switch': {
         'basic': 'cmdb_api.service.snmp.switch.basic.HandleBasic',
+    },
+    'firewall': {
+        'basic': 'cmdb_api.service.snmp.firewall.basic.HandleBasic',
     }
 }

@@ -516,7 +516,7 @@ class AssetAddNetworkDeviceForm(forms.Form):
         label='设备类型',
         help_text='必填项',
         widget=widgets.Select(
-            choices=[('switch', '交换机'), ],
+            choices=[('switch', '交换机'), ('firewall', '防火墙')],
             attrs={'class': 'form-control'}
         )
     )
@@ -526,7 +526,7 @@ class AssetAddNetworkDeviceForm(forms.Form):
         label='制造商',
         help_text='必填项',
         widget=widgets.Select(
-            choices=[('h3c', '华三'), ],
+            choices=[('h3c', '华三'), ('juniper', '瞻博')],
             attrs={'class': 'form-control'}
         )
     )
@@ -952,7 +952,7 @@ class AssetEditNetworkDeviceForm(forms.Form):
         label='设备类型',
         help_text='必填项',
         widget=widgets.Select(
-            choices=[('switch', '交换机'), ('router', '路由器'),],
+            choices=[('switch', '交换机'), ('firewall', '防火墙')],
             attrs={'class': 'form-control'}
         )
     )
@@ -962,7 +962,7 @@ class AssetEditNetworkDeviceForm(forms.Form):
         label='制造商',
         help_text='必填项',
         widget=widgets.Select(
-            choices=[('h3c', '华三'), ],
+            choices=[('h3c', '华三'), ('juniper', '瞻博')],
             attrs={'class': 'form-control'}
         )
     )

@@ -238,19 +238,19 @@ class NetworkDevice(models.Model):
     asset = models.OneToOneField(verbose_name='所属资产', to='Asset', on_delete=models.CASCADE)
     sn = models.CharField(verbose_name='SN号', max_length=64, unique=True)
     manager_ip = models.GenericIPAddressField(verbose_name='管理IP', unique=True)
-    port_number = models.IntegerField(verbose_name='接口数', blank=True, null=True)
-    run_time = models.IntegerField(verbose_name='运行时常', blank=True, null=True)
     device_name = models.CharField(verbose_name='设备名称', max_length=64, blank=True, null=True)
     device_type_choices = (
         ('switch', '交换机'),
-        ('router', '路由器'),
+        ('firewall', '防火墙'),
     )
     device_type = models.CharField(verbose_name='设备类型', max_length=64, choices=device_type_choices, default='switch')
     manufacturer_choices = (
         ('h3c', '华三'),
+        ('juniper', '瞻博'),
     )
     manufacturer = models.CharField(verbose_name='制造商', max_length=64, choices=manufacturer_choices, default='h3c')
     model = models.CharField(verbose_name='型号', max_length=64, null=True, blank=True)
+    port_number = models.IntegerField(verbose_name='接口数', blank=True, null=True)
     basic_info = models.TextField(verbose_name='基本信息', null=True, blank=True)
     create_at = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
     latest_date = models.DateField(verbose_name='更新时间', auto_now=True)
