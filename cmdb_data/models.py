@@ -152,6 +152,7 @@ class Asset(models.Model):
         ('hardwareserver', '硬件服务器'),
         ('softwareserver', '软件服务器'),
         ('networkdevice', '网络设备'),
+        ('securitydevice', '安全设备'),
     )
     asset_type = models.CharField(verbose_name='资产类型', choices=asset_type_choices, max_length=64, default='softwareserver')
     asset_status_choices = (
@@ -166,6 +167,7 @@ class Asset(models.Model):
     idc = models.ForeignKey(verbose_name='所属IDC机房', to='IDC', null=True, blank=True)
     business_unit = models.ForeignKey(verbose_name='所属业务线', to='BusinessUnit', null=True, blank=True)
     tag = models.ManyToManyField(verbose_name='所属标签', to='Tag', blank=True)
+    purchasing_company = models.CharField(verbose_name='采购公司', max_length=64, null=True, blank=True)
     auto = models.BooleanField(verbose_name='是否为自动采集', default=True)
     create_at = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
     latest_date = models.DateField(verbose_name='更新时间', auto_now=True)
@@ -182,10 +184,12 @@ class Asset(models.Model):
             ('can_show_add_hardware_server', '可以访问添加硬件服务器资产页面'),
             ('can_show_add_software_server', '可以访问添加软件件服务器资产页面'),
             ('can_show_add_network_device', '可以访问添加网络设备资产页面'),
+            ('can_show_add_security_device', '可以访问添加安全设备资产页面'),
             ('can_show_hand_add_software_server', '可以访问添加手工录入软件服务器资产页面'),
             ('can_add_hardware_server', '可以添加硬件服务器资产'),
             ('can_add_software_server', '可以添加软件服务器资产'),
             ('can_add_network_device', '可以添加网络设备资产'),
+            ('can_add_security_device', '可以添加安全设备资产'),
             ('can_hand_add_software_server', '可以添加手工录入软件服务器资产'),
             ('can_show_edit_asset', '可以访问资产编辑页面'),
             ('can_edit_asset', '可以编辑资产')
@@ -200,14 +204,15 @@ class HardwareServer(models.Model):
     asset = models.OneToOneField(verbose_name='所属资产', to='Asset', on_delete=models.CASCADE)
     hostname = models.CharField(verbose_name='主机名', max_length=128, null=True, blank=True)
     sn = models.CharField(verbose_name='SN号', max_length=64, unique=True)
+    manager_ip = models.GenericIPAddressField(verbose_name='管理IP', unique=True)
     fast_server_number = models.CharField(verbose_name='快速服务号', max_length=64, null=True, blank=True)
     manufacturer_choices = (
         ('dell', '戴尔'),
     )
-    manufacturer = models.CharField(verbose_name='制造商', max_length=64, choices=manufacturer_choices, default='dell')
+    manufacturer = models.CharField(verbose_name='厂商', max_length=64, choices=manufacturer_choices, default='dell')
     model = models.CharField(verbose_name='型号', max_length=64, null=True, blank=True)
-    manager_ip = models.GenericIPAddressField(verbose_name='管理IP', unique=True)
     os_version = models.CharField(verbose_name='系统版本', max_length=64, null=True, blank=True)
+    memo = models.CharField(verbose_name='备注', max_length=128, null=True, blank=True)
     create_at = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
     latest_date = models.DateField(verbose_name='更新时间', auto_now=True)
 
@@ -223,11 +228,12 @@ class SoftwareServer(models.Model):
     asset = models.OneToOneField(verbose_name='所属资产', to='Asset', on_delete=models.CASCADE)
     hostname = models.CharField(verbose_name='主机名', max_length=128, unique=True)
     os_version = models.CharField(verbose_name='系统版本', max_length=64, null=True, blank=True)
+    memo = models.CharField(verbose_name='备注', max_length=128, null=True, blank=True)
     create_at = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
     latest_date = models.DateField(verbose_name='更新时间', auto_now=True)
 
     class Meta:
-        verbose_name_plural = '硬件服务器表'
+        verbose_name_plural = '软件服务器表'
 
     def __str__(self):
         return self.hostname
@@ -236,22 +242,23 @@ class SoftwareServer(models.Model):
 class NetworkDevice(models.Model):
     """网络设备表"""
     asset = models.OneToOneField(verbose_name='所属资产', to='Asset', on_delete=models.CASCADE)
-    sn = models.CharField(verbose_name='SN号', max_length=64, unique=True)
-    manager_ip = models.GenericIPAddressField(verbose_name='管理IP', unique=True)
-    device_name = models.CharField(verbose_name='设备名称', max_length=64, blank=True, null=True)
+    device_name = models.CharField(verbose_name='设备名称', max_length=64, null=True, blank=True)
     device_type_choices = (
         ('switch', '交换机'),
         ('firewall', '防火墙'),
     )
     device_type = models.CharField(verbose_name='设备类型', max_length=64, choices=device_type_choices, default='switch')
+    sn = models.CharField(verbose_name='SN号', max_length=64, unique=True)
+    manager_ip = models.GenericIPAddressField(verbose_name='管理IP', unique=True)
     manufacturer_choices = (
         ('h3c', '华三'),
         ('juniper', '瞻博'),
     )
-    manufacturer = models.CharField(verbose_name='制造商', max_length=64, choices=manufacturer_choices, default='h3c')
+    manufacturer = models.CharField(verbose_name='厂商', max_length=64, choices=manufacturer_choices, default='h3c')
     model = models.CharField(verbose_name='型号', max_length=64, null=True, blank=True)
-    port_number = models.IntegerField(verbose_name='接口数', blank=True, null=True)
+    port_number = models.IntegerField(verbose_name='接口数', null=True, blank=True)
     basic_info = models.TextField(verbose_name='基本信息', null=True, blank=True)
+    memo = models.CharField(verbose_name='备注', max_length=128, null=True, blank=True)
     create_at = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
     latest_date = models.DateField(verbose_name='更新时间', auto_now=True)
 
@@ -262,18 +269,47 @@ class NetworkDevice(models.Model):
         return self.device_name
 
 
-class CPU(models.Model):
-    """CPU组件表"""
+class SecurityDevice(models.Model):
+    """安全设备表"""
     asset = models.OneToOneField(verbose_name='所属资产', to='Asset', on_delete=models.CASCADE)
-    cpu_model = models.CharField(verbose_name='CPU型号', max_length=128, blank=True, null=True)
-    cpu_physical_count = models.IntegerField(verbose_name='CPU物理个数', blank=True, null=True)
-    cpu_count = models.IntegerField(verbose_name='CPU逻辑个数', blank=True, null=True)
+    device_name = models.CharField(verbose_name='设备名称', max_length=64, null=True, blank=True)
+    device_type_choices = (
+        ('waf', 'WAF'),
+        ('ads', 'ADS'),
+        ('ips', 'IPS'),
+    )
+    device_type = models.CharField(verbose_name='设备类型', max_length=64, choices=device_type_choices, default='waf')
+    sn = models.CharField(verbose_name='SN号', max_length=64, unique=True)
+    manager_ip = models.GenericIPAddressField(verbose_name='管理IP', unique=True)
+    manufacturer_choices = (
+        ('nsfocus', '绿盟'),
+    )
+    manufacturer = models.CharField(verbose_name='厂商', max_length=64, choices=manufacturer_choices, default='h3c')
+    model = models.CharField(verbose_name='型号', max_length=64, null=True, blank=True)
+    port_number = models.IntegerField(verbose_name='接口数', null=True, blank=True)
     memo = models.CharField(verbose_name='备注', max_length=128, null=True, blank=True)
     create_at = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
     latest_date = models.DateField(verbose_name='更新时间', auto_now=True)
 
     class Meta:
-        verbose_name_plural = "CPU部件表"
+        verbose_name_plural = '安全设备表'
+
+    def __str__(self):
+        return self.device_name
+
+
+class CPU(models.Model):
+    """CPU组件表"""
+    asset = models.OneToOneField(verbose_name='所属资产', to='Asset', on_delete=models.CASCADE)
+    cpu_model = models.CharField(verbose_name='CPU型号', max_length=128, null=True, blank=True)
+    cpu_physical_count = models.IntegerField(verbose_name='CPU物理个数', null=True, blank=True)
+    cpu_count = models.IntegerField(verbose_name='CPU逻辑个数', null=True, blank=True)
+    memo = models.CharField(verbose_name='备注', max_length=128, null=True, blank=True)
+    create_at = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
+    latest_date = models.DateField(verbose_name='更新时间', auto_now=True)
+
+    class Meta:
+        verbose_name_plural = "CPU组件表"
 
     def __str__(self):
         return self.cpu_model
@@ -282,14 +318,14 @@ class CPU(models.Model):
 class RAM(models.Model):
     """内存组件表"""
     asset = models.ForeignKey(verbose_name='所属资产', to='Asset', on_delete=models.CASCADE)
-    slot = models.CharField(verbose_name='插槽', max_length=64, blank=True, null=True)
-    sn = models.CharField(verbose_name='SN号', max_length=128, blank=True, null=True)
-    manufacturer = models.CharField(verbose_name='制造商', max_length=64, null=True, blank=True)
-    model = models.CharField(verbose_name='型号', max_length=128, blank=True, null=True)
+    slot = models.CharField(verbose_name='插槽', max_length=64, null=True, blank=True)
+    sn = models.CharField(verbose_name='SN号', max_length=128, null=True, blank=True)
+    manufacturer = models.CharField(verbose_name='厂商', max_length=64, null=True, blank=True)
+    model = models.CharField(verbose_name='型号', max_length=128, null=True, blank=True)
     speed = models.IntegerField(verbose_name='频率', null=True, blank=True)
     total_capacity = models.IntegerField(verbose_name='内存总大小(MB)', blank=True, null=True)
-    capacity = models.IntegerField(verbose_name='内存大小(MB)', blank=True, null=True)
-    memo = models.CharField(verbose_name='备注', max_length=128, blank=True, null=True)
+    capacity = models.IntegerField(verbose_name='内存大小(MB)', null=True, blank=True)
+    memo = models.CharField(verbose_name='备注', max_length=128, null=True, blank=True)
     create_at = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
     latest_date = models.DateField(verbose_name='更新时间', auto_now=True)
 
@@ -307,14 +343,14 @@ class Disk(models.Model):
     """硬盘组件表"""
 
     asset = models.ForeignKey(verbose_name='所属资产', to='Asset', on_delete=models.CASCADE)
-    slot = models.CharField(verbose_name='插槽', max_length=64, blank=True, null=True)
-    sn = models.CharField(verbose_name='SN号', max_length=128, blank=True, null=True)
-    manufacturer = models.CharField(verbose_name='制造商', max_length=64, blank=True, null=True)
-    model = models.CharField(verbose_name='型号', max_length=128, blank=True, null=True)
+    slot = models.CharField(verbose_name='插槽', max_length=64, null=True, blank=True)
+    sn = models.CharField(verbose_name='SN号', max_length=128, null=True, blank=True)
+    manufacturer = models.CharField(verbose_name='厂商', max_length=64, null=True, blank=True)
+    model = models.CharField(verbose_name='型号', max_length=128, null=True, blank=True)
     speed = models.IntegerField(verbose_name='转速', default=10)
-    total_capacity = models.FloatField(verbose_name='磁盘总大小(GB)', blank=True, null=True)
-    capacity = models.FloatField(verbose_name='磁盘大小GB', blank=True, null=True)
-    memo = models.CharField(verbose_name='备注', max_length=128, blank=True, null=True)
+    total_capacity = models.FloatField(verbose_name='磁盘总大小(GB)', null=True, blank=True)
+    capacity = models.FloatField(verbose_name='磁盘大小GB', null=True, blank=True)
+    memo = models.CharField(verbose_name='备注', max_length=128, null=True, blank=True)
     create_at = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
     latest_date = models.DateField(verbose_name='更新时间', auto_now=True)
 
@@ -331,11 +367,11 @@ class Disk(models.Model):
 class NIC(models.Model):
     """网卡组件表"""
     asset = models.ForeignKey(verbose_name='所属资产', to='Asset', on_delete=models.CASCADE)
-    slot = models.CharField(verbose_name='插槽', max_length=64, blank=True, null=True)
-    name = models.CharField(verbose_name='网卡名称', max_length=128, blank=True, null=True)
+    slot = models.CharField(verbose_name='插槽', max_length=64, null=True, blank=True)
+    name = models.CharField(verbose_name='网卡名称', max_length=128, null=True, blank=True)
     macaddress = models.CharField(verbose_name='MAC', max_length=64, unique=True)
-    ipaddress = models.GenericIPAddressField(verbose_name='IP', blank=True, null=True)
-    memo = models.CharField(verbose_name='备注', max_length=128, blank=True, null=True)
+    ipaddress = models.GenericIPAddressField(verbose_name='IP', null=True, blank=True)
+    memo = models.CharField(verbose_name='备注', max_length=128, null=True, blank=True)
     create_at = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
     latest_date = models.DateField(verbose_name='更新时间', auto_now=True)
 

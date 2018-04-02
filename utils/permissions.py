@@ -244,6 +244,13 @@ perm_dic = {
         'method': 'GET',
         'args': []
     },
+    # 可以访问添加安全设备资产
+    'cmdb_data.can_show_add_security_device': {
+        'url_type': 0,
+        'url': 'asset_add_security_device',
+        'method': 'GET',
+        'args': []
+    },
     # 可以访问手工录入添加软件服务器资产
     'cmdb_data.can_show_hand_add_software_server': {
         'url_type': 0,
@@ -269,6 +276,13 @@ perm_dic = {
     'cmdb_data.can_add_network_server': {
         'url_type': 0,
         'url': 'asset_add_network_device',
+        'method': 'POST',
+        'args': []
+    },
+    # 可以添加安全设备资产
+    'cmdb_data.can_add_security_server': {
+        'url_type': 0,
+        'url': 'asset_add_security_device',
         'method': 'POST',
         'args': []
     },

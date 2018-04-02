@@ -38,68 +38,47 @@
 
         <!--Tabs Content-->
         <div class="tab-content">
+            <!-- 基本信息开始 -->
             <div id="demo-lft-tab-1" class="tab-pane fade active in">
                 <div class="form-horizontal clearfix" style="margin-top:20px;">
                     <div class="form-group col-md-6">
-                        <div class="col-md-4 control-label">类型：</div>
+                        <div class="col-md-4 control-label">资产类型：</div>
                         <div class="col-md-7 control-label text-left">{% display_asset_type response.data %}</div>
                     </div>
-                    {% if response.data.asset_type == "hardwareserver" %}
-                        <div class="form-group col-md-6">
-                            <div class="col-md-4 control-label">主机名：</div>
-                            <div class="col-md-7 control-label text-left">
-                                {% if response.data.hardwareserver.hostname %}
-                                    {{ response.data.hardwareserver.hostname }}
-                                {% endif %}
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <div class="col-md-4 control-label">管理IP：</div>
-                            <div class="col-md-7 control-label text-left">{{ response.data.hardwareserver.manager_ip }}</div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <div class="col-md-4 control-label">SN号：</div>
-                            <div class="col-md-7 control-label text-left">{{ response.data.hardwareserver.sn }}</div>
-                        </div>
-                    {% endif %}
-                    {% if response.data.asset_type == "networkdevice" %}
-                        <div class="form-group col-md-6">
-                            <div class="col-md-4 control-label">设备名：</div>
-                            <div class="col-md-7 control-label text-left">
-                                {% if response.data.networkdevice.device_name %}
-                                    {{ response.data.networkdevice.device_name }}
-                                {% endif %}
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <div class="col-md-4 control-label">设备类型：</div>
-                            <div class="col-md-7 control-label text-left">
-                                {% display_network_device_device_type response.data response.data.networkdevice.device_type %}
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <div class="col-md-4 control-label">管理IP：</div>
-                            <div class="col-md-7 control-label text-left">{{ response.data.networkdevice.manager_ip }}</div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <div class="col-md-4 control-label">SN号：</div>
-                            <div class="col-md-7 control-label text-left">{{ response.data.networkdevice.sn }}</div>
-                        </div>
-                    {% endif %}
-                    {% if response.data.asset_type == "softwareserver" %}
-                        <div class="form-group col-md-6">
-                            <div class="col-md-4 control-label">主机名：</div>
-                            <div class="col-md-7 control-label text-left">{{ response.data.softwareserver.hostname }}</div>
-                        </div>
-                    {% endif %}
                     <div class="form-group col-md-6">
-                        <div class="col-md-4 control-label">状态：</div>
+                        <div class="col-md-4 control-label">资产状态：</div>
                         <div class="col-md-7 control-label text-left">{% display_asset_status response.data response.data.asset_status %}</div>
                     </div>
                     <div class="form-group col-md-6">
                         <div class="col-md-4 control-label">采集方式：</div>
                         <div class="col-md-7 control-label text-left">{% display_asset_auto response.data %}</div>
                     </div>
+                    {% if response.data.asset_type != "softwareserver" %}
+                        <div class="form-group col-md-6">
+                            <div class="col-md-4 control-label">采购公司：</div>
+                            <div class="col-md-7 control-label text-left">
+                                {% if response.data.purchasing_company %}
+                                    {{ response.data.purchasing_company }}
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if response.data.asset_type == "networkdevice" %}
+                        <div class="form-group col-md-6">
+                            <div class="col-md-4 control-label">设备类型：</div>
+                            <div class="col-md-7 control-label text-left">
+                                {% display_network_device_device_type response.data response.data.networkdevice.device_type %}
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if response.data.asset_type == "securitydevice" %}
+                        <div class="form-group col-md-6">
+                            <div class="col-md-4 control-label">设备类型：</div>
+                            <div class="col-md-7 control-label text-left">
+                                {% display_security_device_device_type response.data response.data.securitydevice.device_type %}
+                            </div>
+                        </div>
+                    {% endif %}
                     <div class="form-group col-md-6">
                         <div class="col-md-4 control-label">更新时间：</div>
                         <div class="col-md-7 control-label text-left">{{ response.data.latest_date|date:"Y-m-d" }}</div>
@@ -121,7 +100,7 @@
                         <div class="col-md-4 control-label">柜上位置：</div>
                         <div class="col-md-7 control-label text-left">{{ response.data.cabinet_order }}</div>
                     </div>
-                    {% if response.data.tag %}
+                    {% if response.data.tag.all %}
                         <div class="dotted col-md-12"></div>
                         <div class="form-group col-md-6">
                             <div class="col-md-4 control-label">标签：</div>
@@ -161,13 +140,54 @@
                             </div>
                         </div>
                     {% endif %}
+                    {% if response.data.asset_type == "softwareserver" %}
+                        {% if response.data.softwareserver.memo %}
+                            <div class="dotted col-md-12"></div>
+                            <div class="form-group col-md-6">
+                                <div class="col-md-4 control-label">备注：</div>
+                                <div class="col-md-7 control-label text-left">{{ response.data.softwareserver.memo }}</div>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                    {% if response.data.asset_type == "hardwareserver" %}
+                        {% if response.data.hardwareserver.memo %}
+                            <div class="dotted col-md-12"></div>
+                            <div class="form-group col-md-6">
+                                <div class="col-md-4 control-label">备注：</div>
+                                <div class="col-md-7 control-label text-left">{{ response.data.hardwareserver.memo }}</div>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                    {% if response.data.asset_type == "networkdevice" %}
+                        {% if response.data.networkdevice.memo %}
+                            <div class="dotted col-md-12"></div>
+                            <div class="form-group col-md-6">
+                                <div class="col-md-4 control-label">备注：</div>
+                                <div class="col-md-7 control-label text-left">{{ response.data.networkdevice.memo }}</div>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                    {% if response.data.asset_type == "securitydevice" %}
+                        {% if response.data.securitydevice.memo %}
+                            <div class="dotted col-md-12"></div>
+                            <div class="form-group col-md-6">
+                                <div class="col-md-4 control-label">备注：</div>
+                                <div class="col-md-7 control-label text-left">{{ response.data.securitydevice.memo }}</div>
+                            </div>
+                        {% endif %}
+                    {% endif %}
                 </div>
             </div>
+            <!-- 基本信息结束 -->
+
+            <!-- 硬件信息开始 -->
             <div id="demo-lft-tab-2" class="tab-pane fade">
+                <!-- 硬件服务器 -->
                 {% if asset_type == "hardwareserver" %}
                     <div class="guige">
                         <table class="guige-table">
                             <tbody>
+                            <!-- 基础信息开始 -->
                             <tr>
                                 <th colspan="6" class="title f14 th"><span class="padding-l-8">基础信息</span>
                                 </th>
@@ -177,15 +197,23 @@
                                 <td colspan="5">值</td>
                             </tr>
                             <tr>
-                                <td>系统版本</td>
+                                <td>主机名</td>
                                 <td colspan="5">
-                                    {% if response.data.hardwareserver.os_version %}
-                                        {{ response.data.hardwareserver.os_version }}
+                                    {% if response.data.hardwareserver.hostname %}
+                                        {{ response.data.hardwareserver.hostname }}
                                     {% endif %}
                                 </td>
                             </tr>
                             <tr>
-                                <td>主板SN号</td>
+                                <td>管理IP</td>
+                                <td colspan="5">
+                                    {% if response.data.hardwareserver.manager_ip %}
+                                        {{ response.data.hardwareserver.manager_ip }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>SN号</td>
                                 <td colspan="5">
                                     {% if response.data.hardwareserver.sn %}
                                         {{ response.data.hardwareserver.sn }}
@@ -201,7 +229,15 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>主板型号</td>
+                                <td>厂商</td>
+                                <td colspan="5">
+                                    {% if response.data.hardwareserver.manufacturer %}
+                                        {% display_hardware_server_manufacturer response.data response.data.hardwareserver.manufacturer %}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>型号</td>
                                 <td colspan="5">
                                     {% if response.data.hardwareserver.model %}
                                         {{ response.data.hardwareserver.model }}
@@ -209,12 +245,23 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>主板厂商</td>
+                                <td>系统版本</td>
                                 <td colspan="5">
-                                    {% if response.data.hardwareserver.manufacturer %}
-                                        {% display_hardware_server_manufacturer response.data response.data.hardwareserver.manufacturer %}
+                                    {% if response.data.hardwareserver.os_version %}
+                                        {{ response.data.hardwareserver.os_version }}
                                     {% endif %}
                                 </td>
+                            </tr>
+                            <!-- 基础信息结束 -->
+
+                            <!-- cpu信息开始 -->
+                            <tr>
+                                <th colspan="6" class="title f14 th"><span class="padding-l-8">CPU信息</span>
+                                </th>
+                            </tr>
+                            <tr>
+                                <td>名称</td>
+                                <td colspan="5">值</td>
                             </tr>
                             <tr>
                                 <td>CPU型号</td>
@@ -228,6 +275,8 @@
                                 <td>CPU核数</td>
                                 <td colspan="5">{{ response.data.cpu.cpu_count }}</td>
                             </tr>
+                            <!-- cpu信息结束 -->
+
                             <!-- 网卡信息开始 -->
                             <tr>
                                 <th colspan="6" class="title f14 th"><span class="padding-l-8">网卡信息</span>
@@ -277,10 +326,12 @@
                         </table>
                     </div>
                 {% endif %}
+                <!-- 软件服务器 -->
                 {% if asset_type == "softwareserver" %}
                     <div class="guige">
                         <table class="guige-table">
                             <tbody>
+                            <!-- 基础信息开始 -->
                             <tr>
                                 <th colspan="6" class="title f14 th"><span class="padding-l-8">基础信息</span>
                                 </th>
@@ -290,12 +341,31 @@
                                 <td colspan="5">值</td>
                             </tr>
                             <tr>
+                                <td>主机名</td>
+                                <td colspan="5">
+                                    {% if response.data.softwareserver.hostname %}
+                                        {{ response.data.softwareserver.hostname }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
                                 <td>系统版本</td>
                                 <td colspan="5">
                                     {% if response.data.softwareserver.os_version %}
                                         {{ response.data.softwareserver.os_version }}
                                     {% endif %}
                                 </td>
+                            </tr>
+                            <!-- 基础信息结束 -->
+
+                            <!-- cpu信息开始 -->
+                            <tr>
+                                <th colspan="6" class="title f14 th"><span class="padding-l-8">CPU信息</span>
+                                </th>
+                            </tr>
+                            <tr>
+                                <td>名称</td>
+                                <td colspan="5">值</td>
                             </tr>
                             <tr>
                                 <td>CPU型号</td>
@@ -309,6 +379,8 @@
                                 <td>CPU核数</td>
                                 <td colspan="5">{{ response.data.cpu.cpu_count }}</td>
                             </tr>
+                            <!-- cpu信息结束 -->
+
                             <!-- 网卡信息开始 -->
                             <tr>
                                 <th colspan="6" class="title f14 th"><span class="padding-l-8">网卡信息</span>
@@ -353,6 +425,7 @@
                         </table>
                     </div>
                 {% endif %}
+                <!-- 网络设备 -->
                 {% if asset_type == "networkdevice" %}
                     <div class="guige">
                         <table class="guige-table">
@@ -361,9 +434,30 @@
                                 <th colspan="6" class="title f14 th"><span class="padding-l-8">基础信息</span>
                                 </th>
                             </tr>
+                            <!-- 基础信息开始 -->
                             <tr>
                                 <td>名称</td>
                                 <td colspan="5">值</td>
+                            </tr>
+                            <tr>
+                                <td>设备名称</td>
+                                <td colspan="5">
+                                    {% if response.data.networkdevice.device_name %}
+                                        {{ response.data.networkdevice.device_name }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>管理IP</td>
+                                <td colspan="5">
+                                    {{ response.data.networkdevice.manager_ip }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>SN号</td>
+                                <td colspan="5">
+                                    {{ response.data.networkdevice.sn }}
+                                </td>
                             </tr>
                             <tr>
                                 <td>厂商</td>
@@ -377,12 +471,6 @@
                                     {% if response.data.networkdevice.model %}
                                         {{ response.data.networkdevice.model }}
                                     {% endif %}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>SN号</td>
-                                <td colspan="5">
-                                    {{ response.data.networkdevice.sn }}
                                 </td>
                             </tr>
                             <tr>
@@ -401,11 +489,76 @@
                                     {% endif %}
                                 </td>
                             </tr>
+                            <!-- 基础信息结束 -->
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+                <!-- 安全设备 -->
+                {% if asset_type == "securitydevice" %}
+                    <div class="guige">
+                        <table class="guige-table">
+                            <tbody>
+                            <tr>
+                                <th colspan="6" class="title f14 th"><span class="padding-l-8">基础信息</span>
+                                </th>
+                            </tr>
+                            <!-- 基础信息开始 -->
+                            <tr>
+                                <td>名称</td>
+                                <td colspan="5">值</td>
+                            </tr>
+                            <tr>
+                                <td>设备名称</td>
+                                <td colspan="5">
+                                    {% if response.data.securitydevice.device_name %}
+                                        {{ response.data.securitydevice.device_name }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>管理IP</td>
+                                <td colspan="5">
+                                    {{ response.data.securitydevice.manager_ip }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>SN号</td>
+                                <td colspan="5">
+                                    {{ response.data.securitydevice.sn }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>厂商</td>
+                                <td colspan="5">
+                                    {% display_security_device_manufacturer response.data response.data.securitydevice.manufacturer %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>型号</td>
+                                <td colspan="5">
+                                    {% if response.data.securitydevice.model %}
+                                        {{ response.data.securitydevice.model }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>接口个数</td>
+                                <td colspan="5">
+                                    {% if response.data.securitydevice.port_number %}
+                                        {{ response.data.securitydevice.port_number }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <!-- 基础信息结束 -->
                             </tbody>
                         </table>
                     </div>
                 {% endif %}
             </div>
+            <!-- 基本信息结束 -->
+
+            <!-- 变更记录开始 -->
             <div id="demo-lft-tab-3" class="tab-pane fade">
                 <div class="clearfix handle_log">
                     <div class="left" style="width:240px;height:200px;">&nbsp;</div>
@@ -434,6 +587,7 @@
                     </div>
                 </div>
             </div>
+            <!-- 变更记录结束 -->
         </div>
     </div>
 
@@ -443,7 +597,8 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button id="close" type="button" class="bootbox-close-button close" data-dismiss="modal" aria-hidden="true">×
+                    <button id="close" type="button" class="bootbox-close-button close" data-dismiss="modal"
+                            aria-hidden="true">×
                     </button>
                     <h4 class="modal-title">修改硬盘转速</h4></div>
                 <div class="modal-body">

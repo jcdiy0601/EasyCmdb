@@ -18,27 +18,33 @@
         <!-- /.panel-heading -->
         <div class="panel-body">
             <div class="col-lg-4">
-                <a href="{% url 'asset_add_hardware_server' %}" class="btn col-lg-12">
+                <a href="{% url 'asset_add_hardware_server' %}" class="btn pull-left">
                     <i class="fa fa-cog fa-spin fa-5x" aria-hidden="true"></i>
                     <span>硬件服务器</span>
                 </a>
             </div>
             <div class="col-lg-4">
-                <a href="{% url 'asset_add_software_server' %}" class="btn col-lg-12">
+                <a href="{% url 'asset_add_software_server' %}" class="btn pull-left">
                     <i class="fa fa-cog fa-spin fa-5x" aria-hidden="true"></i>
                     <span>软件服务器</span>
                 </a>
             </div>
             <div class="col-lg-4">
-                <a href="{% url 'asset_hand_add_software_server' %}" class="btn col-lg-12">
+                <a href="{% url 'asset_hand_add_software_server' %}" class="btn pull-left">
                     <i class="fa fa-cog fa-spin fa-5x" aria-hidden="true"></i>
                     <span>软件服务器[手工录入]</span>
                 </a>
             </div>
             <div class="col-lg-4" style="margin-top: 20px;">
-                <a href="{% url 'asset_add_network_device' %}" class="btn col-lg-12">
+                <a href="{% url 'asset_add_network_device' %}" class="btn pull-left">
                     <i class="fa fa-cog fa-spin fa-5x" aria-hidden="true"></i>
-                    <span>网络&设备</span>
+                    <span>网络设备</span>
+                </a>
+            </div>
+            <div class="col-lg-4" style="margin-top: 20px;">
+                <a href="{% url 'asset_add_security_device' %}" class="btn pull-left">
+                    <i class="fa fa-cog fa-spin fa-5x" aria-hidden="true"></i>
+                    <span>安全设备[手工录入]</span>
                 </a>
             </div>
         </div>
