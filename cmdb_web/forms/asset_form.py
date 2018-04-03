@@ -1123,6 +1123,231 @@ class AssetEditSoftwareServerForm(forms.Form):
             raise ValidationError(_('主机名%(hostname)s已存在'), code='invalid', params={'hostname': hostname})
 
 
+class AssetHandEditSoftwareServerForm(forms.Form):
+    """编辑资产软件服务器手工录入视图表单验证类"""
+    asset_type = fields.CharField(
+        max_length=64,
+        error_messages={'required': '不能为空', 'invalid': '格式错误', 'max_length': '最大长度不能大于64位'},
+        label='资产类型',
+        help_text='必填项',
+        widget=widgets.Select(
+            choices=[('softwareserver', '软件服务器')],
+            attrs={'class': 'form-control'}
+        )
+    )
+    asset_status = fields.CharField(
+        max_length=64,
+        error_messages={'required': '不能为空', 'invalid': '格式错误', 'max_length': '最大长度不能大于64位'},
+        label='资产状态',
+        help_text='必填项',
+        widget=widgets.Select(
+            choices=[('online', '在线'), ('offline', '离线'), ('putaway', '上架'), ('removeoff', '下架')],
+            attrs={'class': 'form-control'}
+        )
+    )
+    idc_id = fields.IntegerField(
+        required=False,
+        error_messages={'invalid': '格式错误'},
+        label='IDC机房',
+        widget=widgets.Select(
+            choices=[],
+            attrs={'class': 'form-control'}
+        )
+    )
+    cabinet_num = fields.CharField(
+        required=False,
+        max_length=32,
+        error_messages={'invalid': '格式错误', 'max_length': '最大长度不能大于32位'},
+        label='机柜号',
+        widget=widgets.TextInput(
+            attrs={'class': 'form-control'}
+        )
+    )
+    cabinet_order = fields.CharField(
+        required=False,
+        max_length=32,
+        error_messages={'invalid': '格式错误', 'max_length': '最大长度不能大于32位'},
+        label='机柜中序号',
+        widget=widgets.TextInput(
+            attrs={'class': 'form-control'}
+        )
+    )
+    business_unit_id = fields.IntegerField(
+        required=False,
+        error_messages={'invalid': '格式错误'},
+        label='所属业务线',
+        widget=widgets.Select(
+            choices=[],
+            attrs={'class': 'form-control'}
+        )
+    )
+    tag_id = fields.MultipleChoiceField(
+        required=False,
+        error_messages={'invalid': '格式错误'},
+        label='标签',
+        choices=[],
+        widget=widgets.SelectMultiple(
+            attrs={'class': 'form-control',
+                   'size': 5}
+        )
+    )
+    hostname = fields.CharField(
+        max_length=128,
+        error_messages={'required': '不能为空', 'invalid': '格式错误', 'max_length': '最大长度不能大于128位'},
+        label='主机名',
+        help_text='必填项',
+        widget=widgets.TextInput(
+            attrs={'class': 'form-control'}
+        )
+    )
+    os_version = fields.CharField(
+        max_length=64,
+        error_messages={'required': '不能为空', 'invalid': '格式错误', 'max_length': '最大长度不能大于64位'},
+        label='系统版本',
+        help_text='必填项',
+        widget=widgets.TextInput(
+            attrs={'class': 'form-control'}
+        )
+    )
+    cpu_model = fields.CharField(
+        max_length=128,
+        error_messages={'required': '不能为空', 'invalid': '格式错误', 'max_length': '最大长度不能大于128位'},
+        label='CPU型号',
+        help_text='必填项',
+        widget=widgets.TextInput(
+            attrs={'class': 'form-control'}
+        )
+    )
+    cpu_physical_count = fields.IntegerField(
+        error_messages={'required': '不能为空', 'invalid': '格式错误'},
+        label='CPU物理个数',
+        help_text='必填项',
+        widget=widgets.TextInput(
+            attrs={'class': 'form-control'}
+        )
+    )
+    cpu_count = fields.IntegerField(
+        error_messages={'required': '不能为空', 'invalid': '格式错误'},
+        label='CPU逻辑个数',
+        help_text='必填项',
+        widget=widgets.TextInput(
+            attrs={'class': 'form-control'}
+        )
+    )
+    ram_total_capacity = fields.IntegerField(
+        error_messages={'required': '不能为空', 'invalid': '格式错误'},
+        label='内存总大小(MB)',
+        help_text='必填项',
+        widget=widgets.TextInput(
+            attrs={'class': 'form-control'}
+        )
+    )
+    disk_total_capacity = fields.IntegerField(
+        error_messages={'required': '不能为空', 'invalid': '格式错误'},
+        label='磁盘总大小(GB)',
+        help_text='必填项',
+        widget=widgets.TextInput(
+            attrs={'class': 'form-control'}
+        )
+    )
+    nic_name = fields.CharField(
+        max_length=128,
+        error_messages={'required': '不能为空', 'invalid': '格式错误', 'max_length': '最大长度不能大于128位'},
+        label='网卡名称',
+        help_text='必填项',
+        widget=widgets.TextInput(
+            attrs={'class': 'form-control'}
+        )
+    )
+    nic_macaddress = fields.CharField(
+        max_length=64,
+        error_messages={'required': '不能为空', 'invalid': '格式错误', 'max_length': '最大长度不能大于64位'},
+        label='MAC',
+        help_text='必填项',
+        widget=widgets.TextInput(
+            attrs={'class': 'form-control'}
+        )
+    )
+    nic_ipaddress = fields.GenericIPAddressField(
+        error_messages={'required': '不能为空', 'invalid': '格式错误'},
+        label='IP',
+        help_text='必填项',
+        widget=widgets.TextInput(
+            attrs={'class': 'form-control'}
+        )
+    )
+    memo = fields.CharField(
+        required=False,
+        max_length=128,
+        error_messages={'invalid': '格式错误', 'max_length': '最大长度不能大于128位'},
+        label='备注',
+        widget=widgets.TextInput(
+            attrs={'class': 'form-control'}
+        )
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(AssetHandEditSoftwareServerForm, self).__init__(*args, **kwargs)
+        self.asset_id = self.initial['asset_id']
+        self.fields['asset_type'].initial = []
+        query_set = models.Asset.objects.filter(id=self.asset_id).values('asset_type')
+        for item in list(query_set):
+            self.fields['asset_type'].initial.append(item['asset_type'])
+        self.fields['business_unit_id'].widget.choices = list(models.BusinessUnit.objects.values_list('id', 'name'))
+        self.fields['business_unit_id'].widget.choices.insert(0, (None, ''))
+        self.fields['business_unit_id'].initial = []
+        query_set = models.Asset.objects.filter(id=self.asset_id).values('business_unit_id')
+        for item in list(query_set):
+            self.fields['business_unit_id'].initial.append(item['business_unit_id'])
+        self.fields['tag_id'].choices = models.Tag.objects.values_list('id', 'name')
+        self.fields['tag_id'].initial = []
+        query_set = models.Asset.objects.filter(id=self.asset_id).values('tag__id')
+        for item in list(query_set):
+            self.fields['tag_id'].initial.append(item['tag__id'])
+        temp = list(models.IDC.objects.values_list('id', 'name', 'floor'))
+        idc_id_choices = [(None, '')]
+        for item in temp:
+            idc_id_choices.append((item[0], '%s-%s' % (item[1], item[2])))
+        self.fields['idc_id'].widget.choices = idc_id_choices
+        self.fields['idc_id'].initial = []
+        query_set = models.Asset.objects.filter(id=self.asset_id).values('idc_id')
+        for item in list(query_set):
+            self.fields['idc_id'].initial.append(item['idc_id'])
+        self.fields['cabinet_num'].initial = models.Asset.objects.filter(id=self.asset_id).first().cabinet_num
+        self.fields['cabinet_order'].initial = models.Asset.objects.filter(id=self.asset_id).first().cabinet_order
+        self.fields['asset_status'].initial = []
+        query_set = models.Asset.objects.filter(id=self.asset_id).values('asset_status')
+        for item in list(query_set):
+            self.fields['asset_status'].initial.append(item['asset_status'])
+        self.fields['hostname'].initial = models.SoftwareServer.objects.filter(asset_id=self.asset_id).first().hostname
+        self.fields['os_version'].initial = models.SoftwareServer.objects.filter(asset_id=self.asset_id).first().os_version
+        self.fields['memo'].initial = models.SoftwareServer.objects.filter(asset_id=self.asset_id).first().memo
+        self.fields['cpu_model'].initial = models.CPU.objects.filter(asset_id=self.asset_id).first().cpu_model
+        self.fields['cpu_physical_count'].initial = models.CPU.objects.filter(asset_id=self.asset_id).first().cpu_physical_count
+        self.fields['cpu_count'].initial = models.CPU.objects.filter(asset_id=self.asset_id).first().cpu_count
+        self.fields['ram_total_capacity'].initial = models.RAM.objects.filter(asset_id=self.asset_id).first().total_capacity
+        self.fields['disk_total_capacity'].initial = models.Disk.objects.filter(asset_id=self.asset_id).first().total_capacity
+        self.fields['nic_name'].initial = models.NIC.objects.filter(asset_id=self.asset_id).first().name
+        self.fields['nic_macaddress'].initial = models.NIC.objects.filter(asset_id=self.asset_id).first().macaddress
+        self.fields['nic_ipaddress'].initial = models.NIC.objects.filter(asset_id=self.asset_id).first().ipaddress
+
+    def clean_hostname(self):
+        hostname = self.cleaned_data.get('hostname')
+        n = models.SoftwareServer.objects.exclude(asset_id=self.asset_id).filter(hostname=hostname).count()
+        if not n:
+            return self.cleaned_data.get('hostname')
+        else:
+            raise ValidationError(_('主机名%(hostname)s已存在'), code='invalid', params={'hostname': hostname})
+
+    def clean_nic_macaddress(self):
+        macaddress = self.cleaned_data.get('nic_macaddress')
+        n = models.NIC.objects.exclude(asset_id=self.asset_id).filter(macaddress=macaddress).count()
+        if not n:
+            return self.cleaned_data.get('nic_macaddress')
+        else:
+            raise ValidationError(_('MAC%(macaddress)s已存在'), code='invalid', params={'macaddress': macaddress})
+
+
 class AssetEditNetworkDeviceForm(forms.Form):
     """编辑网络设备视图表单验证类"""
     asset_type = fields.CharField(
@@ -1389,6 +1614,15 @@ class AssetEditSecurityDeviceForm(forms.Form):
             attrs={'class': 'form-control'}
         )
     )
+    device_name = fields.CharField(
+        max_length=64,
+        error_messages={'required': '不能为空', 'invalid': '格式错误', 'max_length': '最大长度不能大于64位'},
+        label='设备名称',
+        help_text='必填项',
+        widget=widgets.TextInput(
+            attrs={'class': 'form-control'}
+        )
+    )
     device_type = fields.CharField(
         max_length=64,
         error_messages={'required': '不能为空', 'invalid': '格式错误', 'max_length': '最大长度不能大于64位'},
@@ -1421,6 +1655,23 @@ class AssetEditSecurityDeviceForm(forms.Form):
     manager_ip = fields.GenericIPAddressField(
         error_messages={'required': '不能为空', 'invalid': '格式错误'},
         label='管理IP',
+        help_text='必填项',
+        widget=widgets.TextInput(
+            attrs={'class': 'form-control'}
+        )
+    )
+    model = fields.CharField(
+        max_length=64,
+        error_messages={'required': '不能为空', 'invalid': '格式错误', 'max_length': '最大长度不能大于64位'},
+        label='型号',
+        help_text='必填项',
+        widget=widgets.TextInput(
+            attrs={'class': 'form-control'}
+        )
+    )
+    port_number = fields.IntegerField(
+        error_messages={'required': '不能为空', 'invalid': '格式错误'},
+        label='接口数',
         help_text='必填项',
         widget=widgets.TextInput(
             attrs={'class': 'form-control'}
@@ -1482,6 +1733,9 @@ class AssetEditSecurityDeviceForm(forms.Form):
         self.fields['sn'].initial = models.SecurityDevice.objects.filter(asset_id=self.asset_id).first().sn
         self.fields['manager_ip'].initial = models.SecurityDevice.objects.filter(
             asset_id=self.asset_id).first().manager_ip
+        self.fields['model'].initial = models.SecurityDevice.objects.filter(asset_id=self.asset_id).first().model
+        self.fields['port_number'].initial = models.SecurityDevice.objects.filter(asset_id=self.asset_id).first().port_number
+        self.fields['device_name'].initial = models.SecurityDevice.objects.filter(asset_id=self.asset_id).first().device_name
         self.fields['memo'].initial = models.SecurityDevice.objects.filter(asset_id=self.asset_id).first().memo
 
     def clean_sn(self):

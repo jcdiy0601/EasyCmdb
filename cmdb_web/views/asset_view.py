@@ -178,7 +178,6 @@ def asset_hand_add_software_server(request):
             nic_dict['name'] = form_obj.cleaned_data.pop('nic_name')
             nic_dict['macaddress'] = form_obj.cleaned_data.pop('nic_macaddress')
             nic_dict['ipaddress'] = form_obj.cleaned_data.pop('nic_ipaddress')
-
             try:
                 with transaction.atomic():
                     asset_obj = models.Asset.objects.create(**form_obj.cleaned_data)
@@ -278,6 +277,7 @@ def asset_edit(request, *args, **kwargs):
     """
     asset_type = kwargs['asset_type']
     asset_id = kwargs['asset_id']
+    asset_auto = models.Asset.objects.filter(id=asset_id).first().auto
     if request.method == 'POST':
         if asset_type == 'hardwareserver':
             form_obj = asset_form.AssetEditHardwareServerForm(data=request.POST, initial={'asset_id': asset_id})
@@ -413,111 +413,288 @@ def asset_edit(request, *args, **kwargs):
                                                            'asset_id': asset_id,
                                                            'asset_type': asset_type})
         elif asset_type == 'softwareserver':
-            form_obj = asset_form.AssetEditSoftwareServerForm(data=request.POST, initial={'asset_id': asset_id})
-            if form_obj.is_valid():
-                tag_id_list = form_obj.cleaned_data.pop('tag_id')
-                server_dict = {}
-                server_dict['hostname'] = form_obj.cleaned_data.pop('hostname')
-                server_dict['memo'] = form_obj.cleaned_data.pop('memo')
-                try:
-                    with transaction.atomic():
-                        asset_obj = models.Asset.objects.get(id=asset_id)
-                        log_list = []
-                        new_asset_type_id = form_obj.cleaned_data.get('asset_type')
-                        for item in asset_obj.asset_type_choices:
-                            if item[0] == new_asset_type_id:
-                                new_asset_type = item[1]
-                                break
-                        old_asset_type_id = asset_obj.asset_type
-                        for item in asset_obj.asset_type_choices:
-                            if item[0] == old_asset_type_id:
-                                old_asset_type = item[1]
-                                break
-                        if old_asset_type != new_asset_type:
-                            log_list.append('[更新资产类型]:由%s变更为%s' % (old_asset_type, new_asset_type))
-                        new_business_unit_id = form_obj.cleaned_data.get('business_unit_id')
-                        if new_business_unit_id:
-                            new_business_unit = models.BusinessUnit.objects.get(id=new_business_unit_id).name
-                        else:
-                            new_business_unit = None
-                        if asset_obj.business_unit:
-                            old_business_unit = asset_obj.business_unit.name
-                        else:
-                            old_business_unit = None
-                        if old_business_unit != new_business_unit:
-                            log_list.append('[更新业务线]:由%s变更为%s' % (old_business_unit, new_business_unit))
-                        new_idc_id = form_obj.cleaned_data.get('idc_id')
-                        if new_idc_id:
-                            new_idc = models.IDC.objects.get(id=new_idc_id).name
-                        else:
-                            new_idc = None
-                        if asset_obj.idc:
-                            old_idc = asset_obj.idc.name
-                        else:
-                            old_idc = None
-                        if old_idc != new_idc:
-                            log_list.append('[更新IDC]:由%s变更为%s' % (old_idc, new_idc))
-                        new_asset_status_id = form_obj.cleaned_data.get('asset_status')
-                        for item in asset_obj.asset_status_choices:
-                            if item[0] == new_asset_status_id:
-                                new_asset_status = item[1]
-                                break
-                        old_asset_status_id = asset_obj.asset_status
-                        for item in asset_obj.asset_status_choices:
-                            if item[0] == old_asset_status_id:
-                                old_asset_status = item[1]
-                                break
-                        if old_asset_status != new_asset_status:
-                            log_list.append('[更新资产状态]:由%s变更为%s' % (old_asset_status, new_asset_status))
-                        new_cabinet_num = form_obj.cleaned_data.get('cabinet_num')
-                        if not new_cabinet_num:
-                            new_cabinet_num = None
-                        if asset_obj.cabinet_num:
-                            old_cabinet_num = asset_obj.cabinet_num
-                        else:
-                            old_cabinet_num = None
-                        if old_cabinet_num != new_cabinet_num:
-                            log_list.append('[更新机柜号]:由%s变更为%s' % (old_cabinet_num, new_cabinet_num))
-                        new_cabinet_order = form_obj.cleaned_data.get('cabinet_order')
-                        if not new_cabinet_order:
-                            new_cabinet_order = None
-                        if asset_obj.cabinet_order:
-                            old_cabinet_order = asset_obj.cabinet_order
-                        else:
-                            old_cabinet_order = None
-                        if old_cabinet_order != new_cabinet_order:
-                            log_list.append('[更新机柜位置]:由%s变更为%s' % (old_cabinet_order, new_cabinet_order))
-                        models.Asset.objects.filter(id=asset_id).update(**form_obj.cleaned_data)
-                        asset_obj.tag.set(tag_id_list)
+            if asset_auto:  # 自动获取
+                form_obj = asset_form.AssetEditSoftwareServerForm(data=request.POST, initial={'asset_id': asset_id})
+                if form_obj.is_valid():
+                    tag_id_list = form_obj.cleaned_data.pop('tag_id')
+                    server_dict = {}
+                    server_dict['hostname'] = form_obj.cleaned_data.pop('hostname')
+                    server_dict['memo'] = form_obj.cleaned_data.pop('memo')
+                    try:
+                        with transaction.atomic():
+                            asset_obj = models.Asset.objects.get(id=asset_id)
+                            log_list = []
+                            new_asset_type_id = form_obj.cleaned_data.get('asset_type')
+                            for item in asset_obj.asset_type_choices:
+                                if item[0] == new_asset_type_id:
+                                    new_asset_type = item[1]
+                                    break
+                            old_asset_type_id = asset_obj.asset_type
+                            for item in asset_obj.asset_type_choices:
+                                if item[0] == old_asset_type_id:
+                                    old_asset_type = item[1]
+                                    break
+                            if old_asset_type != new_asset_type:
+                                log_list.append('[更新资产类型]:由%s变更为%s' % (old_asset_type, new_asset_type))
+                            new_business_unit_id = form_obj.cleaned_data.get('business_unit_id')
+                            if new_business_unit_id:
+                                new_business_unit = models.BusinessUnit.objects.get(id=new_business_unit_id).name
+                            else:
+                                new_business_unit = None
+                            if asset_obj.business_unit:
+                                old_business_unit = asset_obj.business_unit.name
+                            else:
+                                old_business_unit = None
+                            if old_business_unit != new_business_unit:
+                                log_list.append('[更新业务线]:由%s变更为%s' % (old_business_unit, new_business_unit))
+                            new_idc_id = form_obj.cleaned_data.get('idc_id')
+                            if new_idc_id:
+                                new_idc = models.IDC.objects.get(id=new_idc_id).name
+                            else:
+                                new_idc = None
+                            if asset_obj.idc:
+                                old_idc = asset_obj.idc.name
+                            else:
+                                old_idc = None
+                            if old_idc != new_idc:
+                                log_list.append('[更新IDC]:由%s变更为%s' % (old_idc, new_idc))
+                            new_asset_status_id = form_obj.cleaned_data.get('asset_status')
+                            for item in asset_obj.asset_status_choices:
+                                if item[0] == new_asset_status_id:
+                                    new_asset_status = item[1]
+                                    break
+                            old_asset_status_id = asset_obj.asset_status
+                            for item in asset_obj.asset_status_choices:
+                                if item[0] == old_asset_status_id:
+                                    old_asset_status = item[1]
+                                    break
+                            if old_asset_status != new_asset_status:
+                                log_list.append('[更新资产状态]:由%s变更为%s' % (old_asset_status, new_asset_status))
+                            new_cabinet_num = form_obj.cleaned_data.get('cabinet_num')
+                            if not new_cabinet_num:
+                                new_cabinet_num = None
+                            if asset_obj.cabinet_num:
+                                old_cabinet_num = asset_obj.cabinet_num
+                            else:
+                                old_cabinet_num = None
+                            if old_cabinet_num != new_cabinet_num:
+                                log_list.append('[更新机柜号]:由%s变更为%s' % (old_cabinet_num, new_cabinet_num))
+                            new_cabinet_order = form_obj.cleaned_data.get('cabinet_order')
+                            if not new_cabinet_order:
+                                new_cabinet_order = None
+                            if asset_obj.cabinet_order:
+                                old_cabinet_order = asset_obj.cabinet_order
+                            else:
+                                old_cabinet_order = None
+                            if old_cabinet_order != new_cabinet_order:
+                                log_list.append('[更新机柜位置]:由%s变更为%s' % (old_cabinet_order, new_cabinet_order))
+                            models.Asset.objects.filter(id=asset_id).update(**form_obj.cleaned_data)
+                            asset_obj.tag.set(tag_id_list)
 
-                        server_obj = models.SoftwareServer.objects.get(asset_id=asset_id)
-                        new_hostname = server_dict['hostname']
-                        old_hostname = server_obj.hostname
-                        if old_hostname != new_hostname:
-                            log_list.append('[更新主机名]:由%s变更为%s' % (old_hostname, new_hostname))
-                            server_obj.hostname = new_hostname
-                        new_memo = server_dict['memo']
-                        if not new_memo:
-                            new_memo = None
-                        old_memo = server_obj.memo
-                        if not old_memo:
-                            old_memo = None
-                        if old_memo != new_memo:
-                            log_list.append('[更新备注]:由%s变更为%s' % (old_memo, new_memo))
-                            server_obj.memo = new_memo
-                        server_obj.save()
-                        user_obj = request.user
-                        if log_list:
-                            models.AssetRecord.objects.create(asset=asset_obj,
-                                                              creator=user_obj,
-                                                              content=';'.join(log_list))
-                    return redirect('/cmdb_web/asset.html')
-                except Exception as e:
-                    raise ValidationError(_('更新资产失败'), code='invalid')
-            else:
-                return render(request, 'asset_edit.html', {'form_obj': form_obj,
-                                                           'asset_id': asset_id,
-                                                           'asset_type': asset_type})
+                            server_obj = models.SoftwareServer.objects.get(asset_id=asset_id)
+                            new_hostname = server_dict['hostname']
+                            old_hostname = server_obj.hostname
+                            if old_hostname != new_hostname:
+                                log_list.append('[更新主机名]:由%s变更为%s' % (old_hostname, new_hostname))
+                                server_obj.hostname = new_hostname
+                            new_memo = server_dict['memo']
+                            if not new_memo:
+                                new_memo = None
+                            old_memo = server_obj.memo
+                            if not old_memo:
+                                old_memo = None
+                            if old_memo != new_memo:
+                                log_list.append('[更新备注]:由%s变更为%s' % (old_memo, new_memo))
+                                server_obj.memo = new_memo
+                            server_obj.save()
+                            user_obj = request.user
+                            if log_list:
+                                models.AssetRecord.objects.create(asset=asset_obj,
+                                                                  creator=user_obj,
+                                                                  content=';'.join(log_list))
+                        return redirect('/cmdb_web/asset.html')
+                    except Exception as e:
+                        raise ValidationError(_('更新资产失败'), code='invalid')
+                else:
+                    return render(request, 'asset_edit.html', {'form_obj': form_obj,
+                                                               'asset_id': asset_id,
+                                                               'asset_type': asset_type})
+            else:   # 手动获取
+                form_obj = asset_form.AssetHandEditSoftwareServerForm(data=request.POST, initial={'asset_id': asset_id})
+                if form_obj.is_valid():
+                    tag_id_list = form_obj.cleaned_data.pop('tag_id')
+                    server_dict = {}
+                    server_dict['hostname'] = form_obj.cleaned_data.pop('hostname')
+                    server_dict['os_version'] = form_obj.cleaned_data.pop('os_version')
+                    server_dict['memo'] = form_obj.cleaned_data.pop('memo')
+                    cpu_dict = {}
+                    cpu_dict['cpu_model'] = form_obj.cleaned_data.pop('cpu_model')
+                    cpu_dict['cpu_physical_count'] = form_obj.cleaned_data.pop('cpu_physical_count')
+                    cpu_dict['cpu_count'] = form_obj.cleaned_data.pop('cpu_count')
+                    ram_total_capacity = form_obj.cleaned_data.pop('ram_total_capacity')
+                    disk_total_capacity = form_obj.cleaned_data.pop('disk_total_capacity')
+                    nic_dict = {}
+                    nic_dict['nic_name'] = form_obj.cleaned_data.pop('nic_name')
+                    nic_dict['nic_macaddress'] = form_obj.cleaned_data.pop('nic_macaddress')
+                    nic_dict['nic_ipaddress'] = form_obj.cleaned_data.pop('nic_ipaddress')
+                    try:
+                        with transaction.atomic():
+                            asset_obj = models.Asset.objects.get(id=asset_id)
+                            log_list = []
+                            new_asset_type_id = form_obj.cleaned_data.get('asset_type')
+                            for item in asset_obj.asset_type_choices:
+                                if item[0] == new_asset_type_id:
+                                    new_asset_type = item[1]
+                                    break
+                            old_asset_type_id = asset_obj.asset_type
+                            for item in asset_obj.asset_type_choices:
+                                if item[0] == old_asset_type_id:
+                                    old_asset_type = item[1]
+                                    break
+                            if old_asset_type != new_asset_type:
+                                log_list.append('[更新资产类型]:由%s变更为%s' % (old_asset_type, new_asset_type))
+                            new_business_unit_id = form_obj.cleaned_data.get('business_unit_id')
+                            if new_business_unit_id:
+                                new_business_unit = models.BusinessUnit.objects.get(id=new_business_unit_id).name
+                            else:
+                                new_business_unit = None
+                            if asset_obj.business_unit:
+                                old_business_unit = asset_obj.business_unit.name
+                            else:
+                                old_business_unit = None
+                            if old_business_unit != new_business_unit:
+                                log_list.append('[更新业务线]:由%s变更为%s' % (old_business_unit, new_business_unit))
+                            new_idc_id = form_obj.cleaned_data.get('idc_id')
+                            if new_idc_id:
+                                new_idc = models.IDC.objects.get(id=new_idc_id).name
+                            else:
+                                new_idc = None
+                            if asset_obj.idc:
+                                old_idc = asset_obj.idc.name
+                            else:
+                                old_idc = None
+                            if old_idc != new_idc:
+                                log_list.append('[更新IDC]:由%s变更为%s' % (old_idc, new_idc))
+                            new_asset_status_id = form_obj.cleaned_data.get('asset_status')
+                            for item in asset_obj.asset_status_choices:
+                                if item[0] == new_asset_status_id:
+                                    new_asset_status = item[1]
+                                    break
+                            old_asset_status_id = asset_obj.asset_status
+                            for item in asset_obj.asset_status_choices:
+                                if item[0] == old_asset_status_id:
+                                    old_asset_status = item[1]
+                                    break
+                            if old_asset_status != new_asset_status:
+                                log_list.append('[更新资产状态]:由%s变更为%s' % (old_asset_status, new_asset_status))
+                            new_cabinet_num = form_obj.cleaned_data.get('cabinet_num')
+                            if not new_cabinet_num:
+                                new_cabinet_num = None
+                            if asset_obj.cabinet_num:
+                                old_cabinet_num = asset_obj.cabinet_num
+                            else:
+                                old_cabinet_num = None
+                            if old_cabinet_num != new_cabinet_num:
+                                log_list.append('[更新机柜号]:由%s变更为%s' % (old_cabinet_num, new_cabinet_num))
+                            new_cabinet_order = form_obj.cleaned_data.get('cabinet_order')
+                            if not new_cabinet_order:
+                                new_cabinet_order = None
+                            if asset_obj.cabinet_order:
+                                old_cabinet_order = asset_obj.cabinet_order
+                            else:
+                                old_cabinet_order = None
+                            if old_cabinet_order != new_cabinet_order:
+                                log_list.append('[更新机柜位置]:由%s变更为%s' % (old_cabinet_order, new_cabinet_order))
+                            models.Asset.objects.filter(id=asset_id).update(**form_obj.cleaned_data)
+                            asset_obj.auto = False
+                            asset_obj.save()
+                            asset_obj.tag.set(tag_id_list)
+
+                            server_obj = models.SoftwareServer.objects.get(asset_id=asset_id)
+                            new_hostname = server_dict['hostname']
+                            old_hostname = server_obj.hostname
+                            if old_hostname != new_hostname:
+                                log_list.append('[更新主机名]:由%s变更为%s' % (old_hostname, new_hostname))
+                                server_obj.hostname = new_hostname
+                            new_os_version = server_dict['os_version']
+                            if not new_os_version:
+                                new_os_version = None
+                            old_os_version = server_obj.os_version
+                            if not old_os_version:
+                                old_os_version = None
+                            if old_os_version != new_os_version:
+                                log_list.append('[更新系统版本]:由%s变更为%s' % (old_os_version, new_os_version))
+                                server_obj.os_version = new_os_version
+                            new_memo = server_dict['memo']
+                            if not new_memo:
+                                new_memo = None
+                            old_memo = server_obj.memo
+                            if not old_memo:
+                                old_memo = None
+                            if old_memo != new_memo:
+                                log_list.append('[更新备注]:由%s变更为%s' % (old_memo, new_memo))
+                                server_obj.memo = new_memo
+                            server_obj.save()
+                            cpu_obj = models.CPU.objects.filter(asset=asset_obj).first()
+                            new_cpu_model = cpu_dict['cpu_model']
+                            old_cpu_model = cpu_obj.cpu_model
+                            if old_cpu_model != new_cpu_model:
+                                log_list.append('[更新CPU型号]:由%s变更为%s' % (old_cpu_model, new_cpu_model))
+                                cpu_obj.cpu_model = new_cpu_model
+                            new_cpu_physical_count = cpu_dict['cpu_physical_count']
+                            old_cpu_physical_count = cpu_obj.cpu_physical_count
+                            if old_cpu_physical_count != new_cpu_physical_count:
+                                log_list.append('[更新CPU物理个数]:由%s变更为%s' % (old_cpu_physical_count, new_cpu_physical_count))
+                                cpu_obj.cpu_physical_count = new_cpu_physical_count
+                            new_cpu_count = cpu_dict['cpu_count']
+                            old_cpu_count = cpu_obj.cpu_count
+                            if old_cpu_count != new_cpu_count:
+                                log_list.append('[更新CPU逻辑个数]:由%s变更为%s' % (old_cpu_count, new_cpu_count))
+                                cpu_obj.cpu_count = new_cpu_count
+                            cpu_obj.save()
+                            ram_obj = models.RAM.objects.filter(asset=asset_obj).first()
+                            new_ram_total_capacity = ram_total_capacity
+                            old_ram_total_capacity = ram_obj.total_capacity
+                            if old_ram_total_capacity != new_ram_total_capacity:
+                                log_list.append('[更新内存总大小]:由%s变更为%s' % (old_ram_total_capacity, new_ram_total_capacity))
+                                ram_obj.total_capacity = new_ram_total_capacity
+                            ram_obj.save()
+                            disk_obj = models.Disk.objects.filter(asset=asset_obj).first()
+                            new_disk_total_capacity = disk_total_capacity
+                            old_disk_total_capacity = disk_obj.total_capacity
+                            if old_disk_total_capacity != new_disk_total_capacity:
+                                log_list.append('[更新硬盘总大小]:由%s变更为%s' % (old_disk_total_capacity, new_disk_total_capacity))
+                                disk_obj.total_capacity = new_disk_total_capacity
+                            disk_obj.save()
+                            nic_obj = models.NIC.objects.filter(asset=asset_obj).first()
+                            new_nic_name = nic_dict['nic_name']
+                            old_nic_name = nic_obj.name
+                            if old_nic_name != new_nic_name:
+                                log_list.append('[更新网卡名称]:由%s变更为%s' % (old_nic_name, new_nic_name))
+                                nic_obj.name = new_nic_name
+                            new_nic_macaddress = nic_dict['nic_macaddress']
+                            old_nic_macaddress = nic_obj.macaddress
+                            if old_nic_macaddress != new_nic_macaddress:
+                                log_list.append('[更新MAC]:由%s变更为%s' % (old_nic_macaddress, new_nic_macaddress))
+                                nic_obj.macaddress = new_nic_macaddress
+                            new_nic_ipaddress = nic_dict['nic_ipaddress']
+                            old_nic_ipaddress = nic_obj.ipaddress
+                            if old_nic_ipaddress != new_nic_ipaddress:
+                                log_list.append('[更新IP]:由%s变更为%s' % (old_nic_ipaddress, new_nic_ipaddress))
+                                nic_obj.ipaddress = new_nic_ipaddress
+                            nic_obj.save()
+                            user_obj = request.user
+                            if log_list:
+                                models.AssetRecord.objects.create(asset=asset_obj,
+                                                                  creator=user_obj,
+                                                                  content=';'.join(log_list))
+                        return redirect('/cmdb_web/asset.html')
+                    except Exception as e:
+                        raise ValidationError(_('更新资产失败'), code='invalid')
+                else:
+                    return render(request, 'asset_edit.html', {'form_obj': form_obj,
+                                                               'asset_id': asset_id,
+                                                               'asset_type': asset_type})
         elif asset_type == 'networkdevice':
             form_obj = asset_form.AssetEditNetworkDeviceForm(data=request.POST, initial={'asset_id': asset_id})
             if form_obj.is_valid():
@@ -672,6 +849,9 @@ def asset_edit(request, *args, **kwargs):
                 device_dict['device_type'] = form_obj.cleaned_data.pop('device_type')
                 device_dict['sn'] = form_obj.cleaned_data.pop('sn')
                 device_dict['manager_ip'] = form_obj.cleaned_data.pop('manager_ip')
+                device_dict['model'] = form_obj.cleaned_data.pop('model')
+                device_dict['port_number'] = form_obj.cleaned_data.pop('port_number')
+                device_dict['device_name'] = form_obj.cleaned_data.pop('device_name')
                 device_dict['memo'] = form_obj.cleaned_data.pop('memo')
                 try:
                     with transaction.atomic():
@@ -786,6 +966,21 @@ def asset_edit(request, *args, **kwargs):
                         if old_manager_ip != new_manager_ip:
                             log_list.append('[更新管理IP]:由%s变更为%s' % (old_manager_ip, new_manager_ip))
                             device_obj.manager_ip = new_manager_ip
+                        new_device_name = device_dict['device_name']
+                        old_device_name = device_obj.device_name
+                        if old_device_name != new_device_name:
+                            log_list.append('[更新设备名称]:由%s变更为%s' % (old_device_name, new_device_name))
+                            device_obj.device_name = new_device_name
+                        new_model = device_dict['model']
+                        old_model = device_obj.model
+                        if old_model != new_model:
+                            log_list.append('[更新型号]:由%s变更为%s' % (old_model, new_model))
+                            device_obj.model = new_model
+                        new_port_number = device_dict['port_number']
+                        old_port_number = device_obj.port_number
+                        if old_port_number != new_port_number:
+                            log_list.append('[更新接口数]:由%s变更为%s' % (old_port_number, new_port_number))
+                            device_obj.port_number = new_port_number
                         new_memo = device_dict['memo']
                         if not new_memo:
                             new_memo = None
@@ -812,7 +1007,10 @@ def asset_edit(request, *args, **kwargs):
         if asset_type == 'hardwareserver':
             form_obj = asset_form.AssetEditHardwareServerForm(initial={'asset_id': asset_id})
         elif asset_type == 'softwareserver':
-            form_obj = asset_form.AssetEditSoftwareServerForm(initial={'asset_id': asset_id})
+            if asset_auto:
+                form_obj = asset_form.AssetEditSoftwareServerForm(initial={'asset_id': asset_id})
+            else:
+                form_obj = asset_form.AssetHandEditSoftwareServerForm(initial={'asset_id': asset_id})
         elif asset_type == 'networkdevice':
             form_obj = asset_form.AssetEditNetworkDeviceForm(initial={'asset_id': asset_id})
         elif asset_type == 'securitydevice':
