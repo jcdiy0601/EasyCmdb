@@ -207,7 +207,7 @@ class HardwareServer(models.Model):
     manager_ip = models.GenericIPAddressField(verbose_name='管理IP', unique=True)
     fast_server_number = models.CharField(verbose_name='快速服务号', max_length=64, null=True, blank=True)
     manufacturer_choices = (
-        ('dell', '戴尔'),
+        ('dell', 'DELL'),
     )
     manufacturer = models.CharField(verbose_name='厂商', max_length=64, choices=manufacturer_choices, default='dell')
     model = models.CharField(verbose_name='型号', max_length=64, null=True, blank=True)
@@ -251,8 +251,8 @@ class NetworkDevice(models.Model):
     sn = models.CharField(verbose_name='SN号', max_length=64, unique=True)
     manager_ip = models.GenericIPAddressField(verbose_name='管理IP', unique=True)
     manufacturer_choices = (
-        ('h3c', '华三'),
-        ('juniper', '瞻博'),
+        ('h3c', 'H3C'),
+        ('juniper', 'Juniper'),
     )
     manufacturer = models.CharField(verbose_name='厂商', max_length=64, choices=manufacturer_choices, default='h3c')
     model = models.CharField(verbose_name='型号', max_length=64, null=True, blank=True)
