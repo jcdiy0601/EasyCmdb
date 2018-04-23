@@ -4,15 +4,17 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from utils.cmdb_api_auth import cmdb_api_auth
 from cmdb_api.service import asset
+from cmdb_api.service import softwareserver
 from cmdb_data import models
 from cmdb_api import config
+from utils.response import BaseResponse
 
 
 @csrf_exempt
 @cmdb_api_auth
 def asset_api(request):
     """
-    API视图
+    资产API视图
     :param request:
     :return:
     """
@@ -104,4 +106,21 @@ def asset_api(request):
                 return JsonResponse(ret)
     # 如果请求为get
     response = asset.get_untreated_servers()
+    return JsonResponse(response.__dict__)
+
+
+@csrf_exempt
+@cmdb_api_auth
+def softwareserver_api(request):
+    """软件服务器API视图"""
+    if request.method == 'POST':
+        pass
+    # 如果请求为get
+    hostname = request.GET.get('hostname', None)
+    if hostname:
+        response = softwareserver.check_softwareserver_exist(hostname)
+    else:
+        response = BaseResponse()
+        response.status = False
+        response.message = '未提供软件服务器主机名'
     return JsonResponse(response.__dict__)
