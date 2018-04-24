@@ -8,6 +8,7 @@ from cmdb_api.service import softwareserver
 from cmdb_data import models
 from cmdb_api import config
 from utils.response import BaseResponse
+import traceback
 
 
 @csrf_exempt
@@ -130,7 +131,45 @@ def softwareserver_basic_info_api(request):
 def softwareserver_api(request):
     """软件服务器API视图"""
     if request.method == 'POST':
-        pass
+        response = BaseResponse()
+        report_data = json.loads(request.body.decode('utf-8'))
+        hostname = report_data.get('hostname', None)
+        idc = report_data.get('idc', None)
+        business_unit = report_data.get('business_unit', None)
+        if not idc:
+            response.status = False
+            response.message = '未提供IDC信息'
+            return JsonResponse(response.__dict__)
+        if not business_unit:
+            response.status = False
+            response.message = '未提供业务线信息'
+            return JsonResponse(response.__dict__)
+        if hostname:
+            host_obj = models.SoftwareServer.objects.filter(hostname=hostname).first()
+            if host_obj:
+                response.status = False
+                response.message = '此软件服务器的主机名已存在'
+                return JsonResponse(response.__dict__)
+            else:
+                try:
+                    asset_obj = models.Asset.objects.create(idc_id=int(idc),
+                                                            business_unit_id=int(business_unit),
+                                                            cabinet_num='',
+                                                            cabinet_order='')
+                    models.SoftwareServer.objects.create(asset=asset_obj, hostname=hostname)
+                    response.message = '软件服务器资产添加成功'
+                    return JsonResponse(response.__dict__)
+                except Exception as e:
+                    response.message = '软件服务器资产添加失败'
+                    response.error = str(e)
+                    response.status = False
+                    models.ErrorLog.objects.create(asset=None, title='save_softwareserver_api_post_data',
+                                                   content=traceback.format_exc())
+                    return JsonResponse(response.__dict__)
+        else:
+            response.status = False
+            response.message = '未提供软件服务器主机名'
+            return JsonResponse(response.__dict__)
     # 如果请求为get
     hostname = request.GET.get('hostname', None)
     if hostname:
