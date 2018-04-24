@@ -111,6 +111,22 @@ def asset_api(request):
 
 @csrf_exempt
 @cmdb_api_auth
+def softwareserver_basic_info_api(request):
+    """软件服务器获取基础信息API视图"""
+    response = BaseResponse()
+    ret = {'idc': {}, 'business_unit': {}}
+    idc = models.IDC.objects.all()
+    for idc_obj in idc:
+        ret['idc'][idc_obj.id] = '%s-%s' % (idc_obj.name, idc_obj.floor)
+    business_unit = models.BusinessUnit.objects.all()
+    for business_unit_obj in business_unit:
+        ret['business_unit'][business_unit_obj.id] = business_unit_obj.name
+    response.data = ret
+    return JsonResponse(response.__dict__)
+
+
+@csrf_exempt
+@cmdb_api_auth
 def softwareserver_api(request):
     """软件服务器API视图"""
     if request.method == 'POST':
@@ -124,3 +140,4 @@ def softwareserver_api(request):
         response.status = False
         response.message = '未提供软件服务器主机名'
     return JsonResponse(response.__dict__)
+
