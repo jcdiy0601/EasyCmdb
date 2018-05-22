@@ -5,6 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from utils.cmdb_api_auth import cmdb_api_auth
 from cmdb_api.service import asset
 from cmdb_api.service import softwareserver
+from cmdb_api.service import monitor
 from cmdb_data import models
 from cmdb_api import config
 from utils.response import BaseResponse
@@ -173,10 +174,26 @@ def softwareserver_api(request):
     # 如果请求为get
     hostname = request.GET.get('hostname', None)
     if hostname:
-        response = softwareserver.check_softwareserver_exist(hostname)
+        response = softwareserver.check_softwareserver_exist(hostname=hostname)
     else:
         response = BaseResponse()
         response.status = False
         response.message = '未提供软件服务器主机名'
     return JsonResponse(response.__dict__)
 
+
+@csrf_exempt
+@cmdb_api_auth
+def monitor_api(request):
+    """监控api"""
+    if request.method == 'POST':
+        pass
+    # 如果请求为get
+    hostname = request.GET.get('hostname', None)
+    if hostname:
+        response = monitor.check_hostname_exit(hostname=hostname)
+    else:
+        response = BaseResponse()
+        response.status = False
+        response.message = '未提供软件服务器主机名'
+    return JsonResponse(response.__dict__)
