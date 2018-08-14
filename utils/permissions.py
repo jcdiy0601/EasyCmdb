@@ -244,10 +244,10 @@ perm_dic = {
         'method': 'GET',
         'args': []
     },
-    # 可以访问添加安全设备资产
-    'cmdb_data.can_show_add_security_device': {
+    # 可以访问手工录入添加安全设备资产
+    'cmdb_data.can_show_hand_add_security_device': {
         'url_type': 0,
-        'url': 'asset_add_security_device',
+        'url': 'asset_hand_add_security_device',
         'method': 'GET',
         'args': []
     },
@@ -279,10 +279,10 @@ perm_dic = {
         'method': 'POST',
         'args': []
     },
-    # 可以添加安全设备资产
-    'cmdb_data.can_add_security_server': {
+    # 可以添加手工录入安全设备资产
+    'cmdb_data.can_hand_add_security_server': {
         'url_type': 0,
-        'url': 'asset_add_security_device',
+        'url': 'asset_hand_add_security_device',
         'method': 'POST',
         'args': []
     },
@@ -307,6 +307,13 @@ perm_dic = {
         'method': 'POST',
         'args': []
     },
+    # 可以导出资产
+    'cmdb_data.can_asset_export': {
+        'url_type': 0,
+        'url': 'asset_export',
+        'method': 'POST',
+        'args': []
+    }
 }
 
 

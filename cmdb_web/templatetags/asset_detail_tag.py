@@ -102,7 +102,7 @@ def display_hardware_server_asset_disk(asset_obj):
         temp = temp + '<td>' + item.sn + '</td>'
         temp = temp + '<td>' + item.manufacturer + '</td>'
         temp = temp + '<td>' + item.model + '</td>'
-        temp = temp + '<td>' + '%s千转/分' % str(item.speed) + '<button type="button" nid="%s" class="change-speed btn btn-xs btn-warning">编辑</button></td>' % item.id
+        temp = temp + '<td>' + '%s千转/分' % str(item.speed) + '<button type="button" nid="%s" class="change-speed btn btn-xs btn-default">编辑</button></td>' % item.id
         temp = temp + '<td>' + '%sG' % str(item.capacity) + '</td>'
         temp = temp + '</tr>'
     return mark_safe(temp)

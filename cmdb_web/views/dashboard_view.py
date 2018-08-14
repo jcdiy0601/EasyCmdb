@@ -43,13 +43,32 @@ def chart2(request):
     ret = {}
     hardware_server_count = models.HardwareServer.objects.all().count()
     software_server_count = models.SoftwareServer.objects.all().count()
-    switch_device_count = models.NetworkDevice.objects.filter(device_type='switch').all().count()
-    firewall_device_count = models.NetworkDevice.objects.filter(device_type='firewall').all().count()
+    network_device_count = models.NetworkDevice.objects.all().count()
     security_device_count = models.SecurityDevice.objects.all().count()
     ret['hardware_server_count'] = hardware_server_count
     ret['software_server_count'] = software_server_count
-    ret['switch_device_count'] = switch_device_count
-    ret['firewall_device_count'] = firewall_device_count
+    ret['network_device_count'] = network_device_count
+    ret['security_device_count'] = security_device_count
+    response.data = ret
+    return JsonResponse(response.__dict__)
+
+
+@login_required
+def chart3(request):
+    """
+        仪表盘图2视图
+        :param request:
+        :return:
+        """
+    response = BaseResponse()
+    ret = {}
+    hardware_server_count = models.HardwareServer.objects.all().count()
+    software_server_count = models.SoftwareServer.objects.all().count()
+    network_device_count = models.NetworkDevice.objects.all().count()
+    security_device_count = models.SecurityDevice.objects.all().count()
+    ret['hardware_server_count'] = hardware_server_count
+    ret['software_server_count'] = software_server_count
+    ret['network_device_count'] = network_device_count
     ret['security_device_count'] = security_device_count
     response.data = ret
     return JsonResponse(response.__dict__)

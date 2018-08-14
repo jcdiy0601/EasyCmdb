@@ -1,18 +1,20 @@
 {% extends 'index.html' %}
 {% load format_error_message %}
 
-{% block page-title %}
-    标签管理
+{% block page-header %}
+    <h1 class="page-header"><i class="im-copy"></i> 管理标签</h1>
 {% endblock %}
 
 {% block page-path %}
-    <li><a href="{% url 'index' %}">首页</a></li>
-    <li><a href="{% url 'tag' %}">标签管理</a></li>
+    <li><a href="{% url 'index' %}">仪表盘</a></li>
+    <span>-></span>
+    <li><a href="{% url 'tag' %}">管理标签</a></li>
+    <span>-></span>
     <li><a href="{% url 'tag_add' %}">添加标签</a></li>
 {% endblock %}
 
 {% block page-content %}
-    <div class="panel panel-primary">
+    <div class="panel-primary">
         <div class="panel-heading">
             <h3 class="panel-title">添加标签</h3>
         </div>
@@ -23,13 +25,13 @@
                 {% for field_obj in form_obj %}
                     <div class="form-group">
                         <label for="{{ field_obj.id_for_label }}"
-                               class="col-lg-2 control-label">{{ field_obj.label }}</label>
-                        <div class="col-lg-7">
+                               class="col-lg-2 col-md-2 col-sm-2 col-xs-2 control-label">{{ field_obj.label }}</label>
+                        <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7">
                             {{ field_obj }}
                         </div>
                         {% if field_obj.errors %}
                             <span style="color: red">
-                                <i class="fa fa-times" aria-hidden="true"></i>
+                                <i class="fa-times" aria-hidden="true"></i>
                                 {% error_msg field_obj.errors.as_json %}
                             </span>
                         {% else %}
@@ -38,8 +40,8 @@
                     </div>
                 {% endfor %}
                 <div class="form-group">
-                    <div class="col-lg-offset-2 col-lg-10">
-                        <button type="submit" class="btn btn-success">保存</button>
+                    <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2 col-lg-10 col-md-10 col-sm-10 col-xs-10">
+                        <button type="submit" class="btn btn-default">保存</button>
                     </div>
                 </div>
             </form>

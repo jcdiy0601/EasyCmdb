@@ -34,6 +34,9 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     phone = models.CharField(verbose_name='电话', max_length=11, unique=True)
     is_active = models.BooleanField(verbose_name='是否可登录', default=True)
     is_admin = models.BooleanField(verbose_name='是否为管理员', default=False)
+    memo = models.TextField(verbose_name='备注', null=True, blank=True)
+    create_date = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
+    latest_date = models.DateField(verbose_name='更新时间', auto_now=True)
 
     class Meta:
         verbose_name_plural = '用户表'
@@ -89,6 +92,9 @@ class BusinessUnit(models.Model):
     name = models.CharField(verbose_name='业务线名称', max_length=64, unique=True)
     contact = models.ForeignKey(verbose_name='所属业务联系人', to='UserProfile', related_name='c')
     manager = models.ForeignKey(verbose_name='所属系统管理员', to='UserProfile', related_name='m')
+    memo = models.TextField(verbose_name='备注', null=True, blank=True)
+    create_date = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
+    latest_date = models.DateField(verbose_name='更新时间', auto_now=True)
 
     class Meta:
         verbose_name_plural = '业务线表'
@@ -108,6 +114,9 @@ class IDC(models.Model):
     """IDC表"""
     name = models.CharField(verbose_name='机房', max_length=64)
     floor = models.IntegerField(verbose_name='楼层', default=1)
+    memo = models.TextField(verbose_name='备注', null=True, blank=True)
+    create_date = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
+    latest_date = models.DateField(verbose_name='更新时间', auto_now=True)
 
     class Meta:
         unique_together = (
@@ -130,7 +139,9 @@ class Tag(models.Model):
     """标签表"""
     name = models.CharField(verbose_name='标签名称', max_length=64, unique=True)
     creator = models.ForeignKey(verbose_name='所属创建人', to='UserProfile')
-    create_date = models.DateField(verbose_name='创建时间', auto_now_add=True)
+    memo = models.TextField(verbose_name='备注', null=True, blank=True)
+    create_date = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
+    latest_date = models.DateField(verbose_name='更新时间', auto_now=True)
 
     class Meta:
         verbose_name_plural = '标签表'
@@ -163,13 +174,17 @@ class Asset(models.Model):
     )
     asset_status = models.CharField(verbose_name='资产状态', choices=asset_status_choices, max_length=64, default='online')
     cabinet_num = models.CharField(verbose_name='机柜号', max_length=32, null=True, blank=True)
-    cabinet_order = models.CharField(verbose_name='机柜中序号', max_length=32, null=True, blank=True)
+    cabinet_begin_order = models.IntegerField(verbose_name='机柜起始序号(U)', null=True, blank=True)
+    cabinet_occupy_num = models.IntegerField(verbose_name='设备大小(U)', null=True, blank=True)
     idc = models.ForeignKey(verbose_name='所属IDC机房', to='IDC', null=True, blank=True)
     business_unit = models.ForeignKey(verbose_name='所属业务线', to='BusinessUnit', null=True, blank=True)
     tag = models.ManyToManyField(verbose_name='所属标签', to='Tag', blank=True)
     purchasing_company = models.CharField(verbose_name='采购公司', max_length=64, null=True, blank=True)
+    trade_date = models.DateField('购买时间', null=True, blank=True)
+    expire_date = models.DateField('保修到期时间', null=True, blank=True)
     auto = models.BooleanField(verbose_name='是否为自动采集', default=True)
-    create_at = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
+    memo = models.TextField(verbose_name='备注', null=True, blank=True)
+    create_date = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
     latest_date = models.DateField(verbose_name='更新时间', auto_now=True)
 
     class Meta:
@@ -184,15 +199,16 @@ class Asset(models.Model):
             ('can_show_add_hardware_server', '可以访问添加硬件服务器资产页面'),
             ('can_show_add_software_server', '可以访问添加软件件服务器资产页面'),
             ('can_show_add_network_device', '可以访问添加网络设备资产页面'),
-            ('can_show_add_security_device', '可以访问添加安全设备资产页面'),
+            ('can_show_hand_add_security_device', '可以访问添加手工录入安全设备资产页面'),
             ('can_show_hand_add_software_server', '可以访问添加手工录入软件服务器资产页面'),
             ('can_add_hardware_server', '可以添加硬件服务器资产'),
             ('can_add_software_server', '可以添加软件服务器资产'),
             ('can_add_network_device', '可以添加网络设备资产'),
-            ('can_add_security_device', '可以添加安全设备资产'),
+            ('can_hand_add_security_device', '可以添加手工录入安全设备资产'),
             ('can_hand_add_software_server', '可以添加手工录入软件服务器资产'),
             ('can_show_edit_asset', '可以访问资产编辑页面'),
-            ('can_edit_asset', '可以编辑资产')
+            ('can_edit_asset', '可以编辑资产'),
+            ('can_asset_export', '可以导出资产')
         )
 
     def __str__(self):
@@ -212,15 +228,14 @@ class HardwareServer(models.Model):
     manufacturer = models.CharField(verbose_name='厂商', max_length=64, choices=manufacturer_choices, default='dell')
     model = models.CharField(verbose_name='型号', max_length=64, null=True, blank=True)
     os_version = models.CharField(verbose_name='系统版本', max_length=64, null=True, blank=True)
-    memo = models.CharField(verbose_name='备注', max_length=128, null=True, blank=True)
-    create_at = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
+    create_date = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
     latest_date = models.DateField(verbose_name='更新时间', auto_now=True)
 
     class Meta:
         verbose_name_plural = '硬件服务器表'
 
     def __str__(self):
-        return self.hostname
+        return self.manager_ip
 
 
 class SoftwareServer(models.Model):
@@ -228,8 +243,7 @@ class SoftwareServer(models.Model):
     asset = models.OneToOneField(verbose_name='所属资产', to='Asset', on_delete=models.CASCADE)
     hostname = models.CharField(verbose_name='主机名', max_length=128, unique=True)
     os_version = models.CharField(verbose_name='系统版本', max_length=64, null=True, blank=True)
-    memo = models.CharField(verbose_name='备注', max_length=128, null=True, blank=True)
-    create_at = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
+    create_date = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
     latest_date = models.DateField(verbose_name='更新时间', auto_now=True)
 
     class Meta:
@@ -258,15 +272,14 @@ class NetworkDevice(models.Model):
     model = models.CharField(verbose_name='型号', max_length=64, null=True, blank=True)
     port_number = models.IntegerField(verbose_name='接口数', null=True, blank=True)
     basic_info = models.TextField(verbose_name='基本信息', null=True, blank=True)
-    memo = models.CharField(verbose_name='备注', max_length=128, null=True, blank=True)
-    create_at = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
+    create_date = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
     latest_date = models.DateField(verbose_name='更新时间', auto_now=True)
 
     class Meta:
         verbose_name_plural = '网络设备表'
 
     def __str__(self):
-        return self.device_name
+        return self.manager_ip
 
 
 class SecurityDevice(models.Model):
@@ -287,8 +300,7 @@ class SecurityDevice(models.Model):
     manufacturer = models.CharField(verbose_name='厂商', max_length=64, choices=manufacturer_choices, default='h3c')
     model = models.CharField(verbose_name='型号', max_length=64, null=True, blank=True)
     port_number = models.IntegerField(verbose_name='接口数', null=True, blank=True)
-    memo = models.CharField(verbose_name='备注', max_length=128, null=True, blank=True)
-    create_at = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
+    create_date = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
     latest_date = models.DateField(verbose_name='更新时间', auto_now=True)
 
     class Meta:
@@ -304,8 +316,7 @@ class CPU(models.Model):
     cpu_model = models.CharField(verbose_name='CPU型号', max_length=128, null=True, blank=True)
     cpu_physical_count = models.IntegerField(verbose_name='CPU物理个数', null=True, blank=True)
     cpu_count = models.IntegerField(verbose_name='CPU逻辑个数', null=True, blank=True)
-    memo = models.CharField(verbose_name='备注', max_length=128, null=True, blank=True)
-    create_at = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
+    create_date = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
     latest_date = models.DateField(verbose_name='更新时间', auto_now=True)
 
     class Meta:
@@ -325,8 +336,7 @@ class RAM(models.Model):
     speed = models.IntegerField(verbose_name='频率', null=True, blank=True)
     total_capacity = models.IntegerField(verbose_name='内存总大小(MB)', blank=True, null=True)
     capacity = models.IntegerField(verbose_name='内存大小(MB)', null=True, blank=True)
-    memo = models.CharField(verbose_name='备注', max_length=128, null=True, blank=True)
-    create_at = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
+    create_date = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
     latest_date = models.DateField(verbose_name='更新时间', auto_now=True)
 
     class Meta:
@@ -350,8 +360,7 @@ class Disk(models.Model):
     speed = models.IntegerField(verbose_name='转速', default=10)
     total_capacity = models.FloatField(verbose_name='磁盘总大小(GB)', null=True, blank=True)
     capacity = models.FloatField(verbose_name='磁盘大小GB', null=True, blank=True)
-    memo = models.CharField(verbose_name='备注', max_length=128, null=True, blank=True)
-    create_at = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
+    create_date = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
     latest_date = models.DateField(verbose_name='更新时间', auto_now=True)
 
     class Meta:
@@ -371,8 +380,7 @@ class NIC(models.Model):
     name = models.CharField(verbose_name='网卡名称', max_length=128, null=True, blank=True)
     macaddress = models.CharField(verbose_name='MAC', max_length=64, unique=True)
     ipaddress = models.GenericIPAddressField(verbose_name='IP', null=True, blank=True)
-    memo = models.CharField(verbose_name='备注', max_length=128, null=True, blank=True)
-    create_at = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
+    create_date = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
     latest_date = models.DateField(verbose_name='更新时间', auto_now=True)
 
     class Meta:
@@ -390,13 +398,13 @@ class AssetRecord(models.Model):
     asset = models.ForeignKey(verbose_name='所属资产', to='Asset', on_delete=models.CASCADE)
     content = models.TextField(verbose_name='变更内容', null=True)
     creator = models.ForeignKey(verbose_name='变更来源', to='UserProfile', null=True, blank=True)
-    create_at = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
+    create_date = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
 
     class Meta:
         verbose_name_plural = "资产变更记录表"
 
     def __str__(self):
-        return "%s-%s-%s" % (self.asset.idc.name, self.asset.cabinet_num, self.asset.cabinet_order)
+        return "%s-%s-%s" % (self.asset.idc.name, self.asset.cabinet_num, self.asset.create_date)
 
 
 class ErrorLog(models.Model):
@@ -404,7 +412,7 @@ class ErrorLog(models.Model):
     asset = models.ForeignKey(verbose_name='所属资产', to='Asset', on_delete=models.CASCADE, null=True, blank=True)
     title = models.CharField(verbose_name='标题', max_length=64)
     content = models.TextField(verbose_name='内容')
-    create_at = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
+    create_date = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
 
     class Meta:
         verbose_name_plural = '错误日志表'

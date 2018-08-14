@@ -4,39 +4,35 @@
     <link href="/static/css/commons.css" rel="stylesheet">
 {% endblock %}
 
-{% block page-title %}
-    IDC管理
+{% block page-header %}
+    <h1 class="page-header"><i class="st-cube"></i> 管理IDC</h1>
 {% endblock %}
 
 {% block page-path %}
-    <li><a href="{% url 'index' %}">首页</a></li>
-    <li><a href="{% url 'idc' %}">IDC管理</a></li>
+    <li><a href="{% url 'index' %}">仪表盘</a></li>
+    <span>-></span>
+    <li><a href="{% url 'idc' %}">管理IDC</a></li>
 {% endblock %}
 
 {% block page-content %}
-    <div class="panel panel-primary">
+    <div class="panel-primary">
         <div class="panel-heading">
-            <h3 class="panel-title">IDC信息表</h3>
+            <h3 class="panel-title">IDC信息</h3>
         </div>
         <div class="panel-body">
             <!--查询开始-->
             <div class="search-area">
-                <div class="col-lg-offset-10 do-submit">
-                    <a id="search_condition_submit" class="btn btn-primary no-radius">
-                        <i class="fa fa-search" aria-hidden="true"></i> 搜索
-                    </a>
-                </div>
-                <div id="search_conditions" class="col-md-offset-2 col-md-8">
+                <div id="search_conditions" class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2 col-lg-8 col-md-8 col-sm-8 col-xs-8">
                     <div class="condition">
                         <div class="icons">
-                            <a class="btn btn-default no-radius" onclick="$.AddSearchCondition(this)">
-                                <i class="fa fa-plus" aria-hidden="true"></i>
+                            <a class="btn btn-default" onclick="$.AddSearchCondition(this)">
+                                <i class="im-plus" aria-hidden="true"></i>
                             </a>
                         </div>
-                        <div class="inputs">
+                        <div class="inputs" style="float: left">
                             <div class="input-group">
                                 <div id="search_condition" init="false" class="input-group-btn">
-                                    <label type="button" class="btn btn-default no-radius"
+                                    <label type="button" class="btn btn-default"
                                            style="width: 100px;">&nbsp;</label>
                                     <button type="button"
                                             class="btn btn-default dropdown-toggle no-border-r"
@@ -50,33 +46,38 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                    <a id="search_condition_submit" class="btn btn-default">
+                        <i class="ec-search" aria-hidden="true"></i> 搜索
+                    </a>
+                </div>
             </div>
             <!--查询结束-->
 
             <!--操作开始-->
             <div class="function-area">
                 <div class="btn-group btn-group-sm custom-btn-group">
-                    <a id="check_all" class="btn btn-default no-radius"><i class="fa fa-check-square"
+                    <a id="check_all" class="btn btn-default"><i class="fa-check-sign"
                                                                            aria-hidden="true"></i>
                         全选</a>
-                    <a id="check_cancel" class="btn btn-default no-radius"><i
-                            class="fa fa-minus-square" aria-hidden="true"></i> 取消</a>
-                    <a id="check_reverse" class="btn btn-default no-radius"><i
-                            class="fa fa-check-square-o" aria-hidden="true"></i> 反选</a>
-                    <a class="btn btn-default no-radius" href="{% url 'idc_add' %}"><i
-                            class="fa fa-plus-square" aria-hidden="true"></i> 添加</a>
-                    <a id="do_delete" class="btn btn-default no-radius"><i class="fa fa-trash"
+                    <a id="check_cancel" class="btn btn-default"><i
+                            class="fa-minus-sign-alt" aria-hidden="true"></i> 取消</a>
+                    <a id="check_reverse" class="btn btn-default"><i
+                            class="fa-check" aria-hidden="true"></i> 反选</a>
+                    <a class="btn btn-default" href="{% url 'idc_add' %}"><i
+                            class="fa-plus-sign2" aria-hidden="true"></i> 添加</a>
+                    <a id="do_delete" class="btn btn-default"><i class="fa-trash"
                                                                            aria-hidden="true"></i>
                         删除</a>
-                    <a id="edit_mode_target" class="btn btn-default no-radius"><i
-                            class="fa fa-pencil-square" aria-hidden="true"></i>
+                    <a id="edit_mode_target" class="btn btn-default"><i
+                            class="fa-pencil" aria-hidden="true"></i>
                         <span>进入编辑模式</span></a>
-                    <a id="do_save" class="btn btn-default no-radius"><i class="fa fa-floppy-o"
+                    <a id="do_save" class="btn btn-default"><i class="br-floppy"
                                                                          aria-hidden="true"></i> 保存</a>
-                    <a id="do_refresh" class="btn btn-default no-radius"><i class="fa fa-refresh"
+                    <a id="do_refresh" class="btn btn-default"><i class="fa-refresh"
                                                                             aria-hidden="true"></i>
                         刷新</a>
-                    <a id="handle_status" class="btn no-radius" tabindex="0" role="button"
+                    <a id="handle_status" class="btn" tabindex="0" role="button"
                        data-toggle="manual"
                        data-trigger="focus" data-container="body" data-html="true"
                        data-placement="bottom" title="详细"

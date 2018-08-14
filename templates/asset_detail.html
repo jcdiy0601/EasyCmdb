@@ -6,13 +6,15 @@
     <link href="/static/css/commons.css" rel="stylesheet">
 {% endblock %}
 
-{% block page-title %}
-    资产管理
+{% block page-header %}
+    <h1 class="page-header"><i class="en-dropbox"></i> 管理资产</h1>
 {% endblock %}
 
 {% block page-path %}
-    <li><a href="{% url 'index' %}">首页</a></li>
-    <li><a href="{% url 'asset' %}">资产管理</a></li>
+    <li><a href="{% url 'index' %}">仪表盘</a></li>
+    <span>-></span>
+    <li><a href="{% url 'asset' %}">管理资产</a></li>
+    <span>-></span>
     <li><a href="{% url 'asset_detail' asset_type asset_id %}">资产详情</a></li>
 {% endblock %}
 
@@ -26,13 +28,13 @@
         <!--Nav Tabs-->
         <ul class="nav nav-tabs">
             <li class="active">
-                <a data-toggle="tab" href="#demo-lft-tab-1"><i class="fa fa-magic"></i>基本信息</a>
+                <a data-toggle="tab" href="#demo-lft-tab-1"><i class="fa-magic"></i>基本信息</a>
             </li>
             <li>
-                <a data-toggle="tab" href="#demo-lft-tab-2"><i class="fa fa-thumbs-up"></i>硬件信息</a>
+                <a data-toggle="tab" href="#demo-lft-tab-2"><i class="fa-thumbs-up"></i>硬件信息</a>
             </li>
             <li>
-                <a data-toggle="tab" href="#demo-lft-tab-3"><i class="fa fa-heart"></i>变更记录</a>
+                <a data-toggle="tab" href="#demo-lft-tab-3"><i class="fa-heart"></i>变更记录</a>
             </li>
         </ul>
 
@@ -41,70 +43,100 @@
             <!-- 基本信息开始 -->
             <div id="demo-lft-tab-1" class="tab-pane fade active in">
                 <div class="form-horizontal clearfix" style="margin-top:20px;">
-                    <div class="form-group col-md-6">
-                        <div class="col-md-4 control-label">资产类型：</div>
-                        <div class="col-md-7 control-label text-left">{% display_asset_type response.data %}</div>
+                    <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 control-label">资产类型：</div>
+                        <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 control-label text-left">{% display_asset_type response.data %}</div>
                     </div>
-                    <div class="form-group col-md-6">
-                        <div class="col-md-4 control-label">资产状态：</div>
-                        <div class="col-md-7 control-label text-left">{% display_asset_status response.data response.data.asset_status %}</div>
+                    <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 control-label">资产状态：</div>
+                        <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 control-label text-left">{% display_asset_status response.data response.data.asset_status %}</div>
                     </div>
-                    <div class="form-group col-md-6">
-                        <div class="col-md-4 control-label">采集方式：</div>
-                        <div class="col-md-7 control-label text-left">{% display_asset_auto response.data %}</div>
+                    <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 control-label">采集方式：</div>
+                        <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 control-label text-left">{% display_asset_auto response.data %}</div>
                     </div>
                     {% if response.data.asset_type != "softwareserver" %}
-                        <div class="form-group col-md-6">
-                            <div class="col-md-4 control-label">采购公司：</div>
-                            <div class="col-md-7 control-label text-left">
+                        <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 control-label">采购公司：</div>
+                            <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 control-label text-left">
                                 {% if response.data.purchasing_company %}
                                     {{ response.data.purchasing_company }}
                                 {% endif %}
                             </div>
                         </div>
+                        <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 control-label">购买时间：</div>
+                            <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 control-label text-left">
+                                {% if response.data.trade_date %}
+                                    {{ response.data.trade_date|date:"Y-m-d" }}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 control-label">保修到期时间：</div>
+                            <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 control-label text-left">
+                                {% if response.data.expire_date %}
+                                    {{ response.data.expire_date|date:"Y-m-d" }}
+                                {% endif %}
+                            </div>
+                        </div>
                     {% endif %}
                     {% if response.data.asset_type == "networkdevice" %}
-                        <div class="form-group col-md-6">
-                            <div class="col-md-4 control-label">设备类型：</div>
-                            <div class="col-md-7 control-label text-left">
+                        <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 control-label">设备类型：</div>
+                            <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 control-label text-left">
                                 {% display_network_device_device_type response.data response.data.networkdevice.device_type %}
                             </div>
                         </div>
                     {% endif %}
                     {% if response.data.asset_type == "securitydevice" %}
-                        <div class="form-group col-md-6">
-                            <div class="col-md-4 control-label">设备类型：</div>
-                            <div class="col-md-7 control-label text-left">
+                        <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 control-label">设备类型：</div>
+                            <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 control-label text-left">
                                 {% display_security_device_device_type response.data response.data.securitydevice.device_type %}
                             </div>
                         </div>
                     {% endif %}
-                    <div class="form-group col-md-6">
-                        <div class="col-md-4 control-label">更新时间：</div>
-                        <div class="col-md-7 control-label text-left">{{ response.data.latest_date|date:"Y-m-d" }}</div>
+                    <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 control-label">更新时间：</div>
+                        <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 control-label text-left">{{ response.data.latest_date|date:"Y-m-d" }}</div>
                     </div>
-                    <div class="dotted col-md-12"></div>
-                    <div class="form-group col-md-6">
-                        <div class="col-md-4 control-label">机房：</div>
-                        <div class="col-md-7 control-label text-left">{{ response.data.idc.name }}</div>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <div class="col-md-4 control-label">楼层：</div>
-                        <div class="col-md-7 control-label text-left">{{ response.data.idc.floor }}</div>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <div class="col-md-4 control-label">机柜：</div>
-                        <div class="col-md-7 control-label text-left">{{ response.data.cabinet_num }}</div>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <div class="col-md-4 control-label">柜上位置：</div>
-                        <div class="col-md-7 control-label text-left">{{ response.data.cabinet_order }}</div>
-                    </div>
+                    <div class="dotted col-lg-12 col-md-12 col-sm-12 col-xs-12"></div>
+                    {% if response.data.asset_type != 'softwareserver' %}
+                        <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 control-label">机房：</div>
+                            <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 control-label text-left">{{ response.data.idc.name }}</div>
+                        </div>
+                        <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 control-label">楼层：</div>
+                            <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 control-label text-left">{{ response.data.idc.floor }}</div>
+                        </div>
+                        <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 control-label">机柜：</div>
+                            <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 control-label text-left">{{ response.data.cabinet_num }}</div>
+                        </div>
+                        <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 control-label">机柜起始序号(U)：</div>
+                            <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 control-label text-left">
+                                {% if response.data.cabinet_begin_order %}
+                                    {{ response.data.cabinet_begin_order }}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 control-label">设备大小(U)：</div>
+                            <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 control-label text-left">
+                                {% if response.data.cabinet_occupy_num %}
+                                    {{ response.data.cabinet_occupy_num }}
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
                     {% if response.data.tag.all %}
-                        <div class="dotted col-md-12"></div>
-                        <div class="form-group col-md-6">
-                            <div class="col-md-4 control-label">标签：</div>
-                            <div class="col-md-7 control-label text-left">
+                        <div class="dotted col-lg-12 col-md-12 col-sm-12 col-xs-12"></div>
+                        <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 control-label">标签：</div>
+                            <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 control-label text-left">
                                 {% for tag_obj in response.data.tag.all %}
                                     {% if forloop.last %}
                                         {{ tag_obj.name }}
@@ -116,63 +148,61 @@
                         </div>
                     {% endif %}
                     {% if response.data.business_unit %}
-                        <div class="dotted col-md-12"></div>
-                        <div class="form-group col-md-6">
-                            <div class="col-md-4 control-label">业务线：</div>
-                            <div class="col-md-7 control-label text-left">{{ response.data.business_unit.name }}</div>
+                        <div class="dotted col-lg-12 col-md-12 col-sm-12 col-xs-12"></div>
+                        <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 control-label">业务线：</div>
+                            <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 control-label text-left">{{ response.data.business_unit.name }}</div>
                         </div>
-                        <div class="col-md-12">
-                            <div class="form-group col-md-6">
-                                <div class="col-md-4 control-label">业务联系人：</div>
-                                <div class="col-md-8 control-label text-left">{{ response.data.business_unit.contact.name }}</div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 control-label">业务联系人：</div>
+                                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 control-label text-left">{{ response.data.business_unit.contact.name }}</div>
                             </div>
                         </div>
-                        <div class="col-md-12">
-                            <div class="form-group col-md-6">
-                                <div class="col-md-4 control-label">邮箱：</div>
-                                <div class="col-md-8 control-label text-left">{{ response.data.business_unit.contact.email }}</div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 control-label">邮箱：</div>
+                                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 control-label text-left">{{ response.data.business_unit.contact.email }}</div>
                             </div>
                         </div>
-                        <div class="col-md-12">
-                            <div class="form-group col-md-6">
-                                <div class="col-md-4 control-label">电话：</div>
-                                <div class="col-md-8 control-label text-left">{{ response.data.business_unit.contact.phone }}</div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 control-label">电话：</div>
+                                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 control-label text-left">{{ response.data.business_unit.contact.phone }}</div>
                             </div>
                         </div>
                     {% endif %}
-                    {% if response.data.asset_type == "softwareserver" %}
-                        {% if response.data.softwareserver.memo %}
-                            <div class="dotted col-md-12"></div>
-                            <div class="form-group col-md-6">
-                                <div class="col-md-4 control-label">备注：</div>
-                                <div class="col-md-7 control-label text-left">{{ response.data.softwareserver.memo }}</div>
-                            </div>
-                        {% endif %}
+                    {% if response.data.memo %}
+                        <div class="dotted col-lg-12 col-md-12 col-sm-12 col-xs-12"></div>
+                        <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 control-label">备注：</div>
+                            <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 control-label text-left">{{ response.data.memo }}</div>
+                        </div>
                     {% endif %}
                     {% if response.data.asset_type == "hardwareserver" %}
                         {% if response.data.hardwareserver.memo %}
-                            <div class="dotted col-md-12"></div>
-                            <div class="form-group col-md-6">
-                                <div class="col-md-4 control-label">备注：</div>
-                                <div class="col-md-7 control-label text-left">{{ response.data.hardwareserver.memo }}</div>
+                            <div class="dotted col-lg-12 col-md-12 col-sm-12 col-xs-12"></div>
+                            <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 control-label">备注：</div>
+                                <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 control-label text-left">{{ response.data.hardwareserver.memo }}</div>
                             </div>
                         {% endif %}
                     {% endif %}
                     {% if response.data.asset_type == "networkdevice" %}
                         {% if response.data.networkdevice.memo %}
-                            <div class="dotted col-md-12"></div>
-                            <div class="form-group col-md-6">
-                                <div class="col-md-4 control-label">备注：</div>
-                                <div class="col-md-7 control-label text-left">{{ response.data.networkdevice.memo }}</div>
+                            <div class="dotted col-lg-12 col-md-12 col-sm-12 col-xs-12"></div>
+                            <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 control-label">备注：</div>
+                                <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 control-label text-left">{{ response.data.networkdevice.memo }}</div>
                             </div>
                         {% endif %}
                     {% endif %}
                     {% if response.data.asset_type == "securitydevice" %}
                         {% if response.data.securitydevice.memo %}
-                            <div class="dotted col-md-12"></div>
-                            <div class="form-group col-md-6">
-                                <div class="col-md-4 control-label">备注：</div>
-                                <div class="col-md-7 control-label text-left">{{ response.data.securitydevice.memo }}</div>
+                            <div class="dotted col-lg-12 col-md-12 col-sm-12 col-xs-12"></div>
+                            <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 control-label">备注：</div>
+                                <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 control-label text-left">{{ response.data.securitydevice.memo }}</div>
                             </div>
                         {% endif %}
                     {% endif %}
@@ -566,12 +596,12 @@
                         {% if response.status %}
                             {% for item in response.data.assetrecord_set.all %}
                                 <div style="position:relative;">
-                                    <div class="time">{{ item.create_at |date:"Y-m-d H:i:s" }}</div>
+                                    <div class="time">{{ item.create_date |date:"Y-m-d H:i:s" }}</div>
                                     <div class="record-arrow"></div>
                                     <div class="record">
                                         {{ item.content }}
                                         <div class="auther">
-                                            <span><i class="fa fa-user"></i></span>
+                                            <span><i class="fa-user"></i></span>
                                             {% if  item.creator.name %}
                                                 <span>{{ item.creator.name }}</span>
                                             {% else %}
@@ -593,8 +623,8 @@
 
     <div id="change-speed-div" class="bootbox modal fade in" tabindex="-1" role="dialog" aria-hidden="false"
          style="display: none; padding-right: 17px;">
-        <div class="modal-backdrop fade in" style="height: 100%;"></div>
-        <div class="modal-dialog">
+        <div class="modal-backdrop fade in" style="height: 100%; z-index:10"></div>
+        <div class="modal-dialog" style="margin-top: 200px; z-index: 20">
             <div class="modal-content">
                 <div class="modal-header">
                     <button id="close" type="button" class="bootbox-close-button close" data-dismiss="modal"
@@ -604,14 +634,16 @@
                 <div class="modal-body">
                     <div class="bootbox-body">
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                 <form id="change-speed-form" class="form-horizontal" method="post">
                                     {% csrf_token %}
-                                    <div class="form-group"><label class="col-md-4 control-label"
-                                                                   for="inputspeed">转速(千转/分)</label>
-                                        <div class="col-md-4"><input id="inputspeed" name="speed" type="text"
-                                                                     placeholder="请输入10/15等数字"
-                                                                     class="form-control input-md">
+                                    <div class="form-group"><label
+                                            class="col-lg-4 col-md-4 col-sm-4 col-xs-4 control-label"
+                                            for="inputspeed">转速(千转/分)</label>
+                                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4"><input id="inputspeed"
+                                                                                                name="speed" type="text"
+                                                                                                placeholder="请输入10/15等数字"
+                                                                                                class="form-control input-md">
                                             <span id="error-tag" style="color: red"></span>
                                         </div>
                                     </div>
@@ -621,7 +653,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button id="confirm" type="button" class="btn btn-success">保存</button>
+                    <button id="confirm" type="button" class="btn btn-default">保存</button>
                 </div>
             </div>
         </div>

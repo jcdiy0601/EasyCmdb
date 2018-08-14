@@ -88,12 +88,11 @@ function initChart() {
             if (response.status) {
                 var hardware_server_count = response.data.hardware_server_count;
                 var software_server_count = response.data.software_server_count;
-                var switch_device_count = response.data.switch_device_count;
-                var firewall_device_count = response.data.firewall_device_count;
+                var network_device_count = response.data.network_device_count;
                 var security_device_count = response.data.security_device_count;
 
-                var chart1; // 全局变量
-                chart1 = new Highcharts.Chart({
+                var chart2; // 全局变量
+                chart2 = new Highcharts.Chart({
                     chart: {
                         renderTo: 'container-chart2',
                         type: 'column',
@@ -145,10 +144,78 @@ function initChart() {
                     series: [
                         {name: '硬件服务器', data: [hardware_server_count]},
                         {name: '软件服务器', data: [software_server_count]},
-                        {name: '交换机', data: [switch_device_count]},
-                        {name: '防火墙', data: [firewall_device_count]},
+                        {name: '网络设备', data: [network_device_count]},
                         {name: '安全设备', data: [security_device_count]}
                     ]
+                });
+            } else {
+
+            }
+        },
+        error: function () {
+
+        }
+    });
+
+    //
+    $.ajax({
+        url: '/cmdb_web/dashboard_chart3.html',
+        type: "GET",
+        dataType: "JSON",
+        success: function (response) {
+            if (response.status) {
+                var hardware_server_count = response.data.hardware_server_count;
+                var software_server_count = response.data.software_server_count;
+                var network_device_count = response.data.network_device_count;
+                var security_device_count = response.data.security_device_count;
+
+                var chart3; // 全局变量
+                chart3 = new Highcharts.Chart({
+                    chart: {
+                        renderTo: 'container-chart3',
+                        plotBackgroundColor: null,
+                        plotBorderWidth: null,
+                        plotShadow: false,
+                        type: 'pie'
+                    },
+                    title: {
+                        text: '设备总览饼图'
+                    },
+                    tooltip: {
+                        pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
+                    },
+                    plotOptions: {
+                        pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            dataLabels: {
+                                enabled: false
+                            },
+                            showInLegend: true
+                        }
+                    },
+                    series: [{
+                        name: 'Brands',
+                        colorByPoint: true,
+                        data: [{
+                            name: '硬件服务器',
+                            y: hardware_server_count,
+                            sliced: true,
+                            selected: true
+                        }, {
+                            name: '软件服务器',
+                            y: software_server_count
+                        }, {
+                            name: '网络设备',
+                            y: network_device_count
+                        }, {
+                            name: '安装设备',
+                            y: security_device_count
+                        }]
+                    }],
+                    credits: {
+                        enabled: false // 禁用版权信息
+                    }
                 });
             } else {
 

@@ -19,7 +19,7 @@ $(function () {
             headers: {"X-CSRFtoken": $.cookie("csrftoken")},
             data: $("#change-password-form").serialize(),
             success: function (arg) {
-                if (arg.status){
+                if (arg.status) {
                     $("#change-password-div").css("display", "none");
                     $("#show-change-password-result").removeClass("hidden").addClass("btn-success").text("密码修改成功");
                     setTimeout(function () {
@@ -28,7 +28,6 @@ $(function () {
 
                 } else {
                     var message = arg.message;
-                    console.log(message);
                     $("#change-password-div").css("display", "none");
                     $("#show-change-password-result").removeClass("hidden").addClass("btn-danger").text(message);
                     setTimeout(function () {
@@ -37,7 +36,7 @@ $(function () {
                 }
             },
             error: function () {
-                
+
             }
         });
     });

@@ -15,20 +15,13 @@ import traceback
 @csrf_exempt
 @cmdb_api_auth
 def asset_api(request):
-    """
-    资产API视图
-    :param request:
-    :return:
-    """
+    """资产API视图"""
     # 如果请求为post
     if request.method == 'POST':
         server_info = json.loads(request.body.decode('utf-8'))
         server_info = json.loads(server_info)
         hostname = server_info.get('hostname', None)
         client_type = server_info['client_type']
-        if client_type == 'snmp':
-            device_type = server_info['device_type']
-            manufacturer = server_info['manufacturer']
         # 如果资产由agent获取
         if client_type == 'agent':
             ret = {'code': 201, 'message': '[%s]更新完成' % hostname}
@@ -49,6 +42,7 @@ def asset_api(request):
             return JsonResponse(ret)
         # 如果资产由snmp获取
         elif client_type == 'snmp':
+            device_type = server_info['device_type']
             if device_type == 'server':     # 硬件服务器
                 sn = server_info['main_board']['data']['sn']
                 ret = {'code': 201, 'message': '[%s]更新完成' % sn}
@@ -182,18 +176,18 @@ def softwareserver_api(request):
     return JsonResponse(response.__dict__)
 
 
-@csrf_exempt
-@cmdb_api_auth
-def monitor_api(request):
-    """监控api"""
-    if request.method == 'POST':
-        pass
-    # 如果请求为get
-    hostname = request.GET.get('hostname', None)
-    if hostname:
-        response = monitor.check_hostname_exit(hostname=hostname)
-    else:
-        response = BaseResponse()
-        response.status = False
-        response.message = '未提供软件服务器主机名'
-    return JsonResponse(response.__dict__)
+# @csrf_exempt
+# @cmdb_api_auth
+# def monitor_api(request):
+#     """监控api"""
+#     if request.method == 'POST':
+#         pass
+#     # 如果请求为get
+#     hostname = request.GET.get('hostname', None)
+#     if hostname:
+#         response = monitor.check_hostname_exit(hostname=hostname)
+#     else:
+#         response = BaseResponse()
+#         response.status = False
+#         response.message = '未提供软件服务器主机名'
+#     return JsonResponse(response.__dict__)

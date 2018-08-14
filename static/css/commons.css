@@ -44,22 +44,7 @@ img {
     z-index: 1070;
 }
 
-.no-radius {
-    -webkit-border-radius: 0 !important;
-    -moz-border-radius: 0 !important;
-    -o-border-radius: 0 !important;
-    border-radius: 0 !important;
-    -webkit-appearance: none;
-
-}
-
-/*!* 菜单 *!*/
-/*.sidebar .nav-sidebar .active{*/
-    /*color: black;*/
-    /*background-color: #dddddd;*/
-/*}*/
-
-/*  列表功能开始 */
+/*!*  列表功能开始 *!*/
 
 .panel-body .search-area {
     border-bottom: 0;
@@ -71,6 +56,7 @@ img {
     position: absolute;
     height: 34px;
     bottom: -34px;
+    right: 110px;
 }
 
 .panel-body .search-area .condition {
@@ -80,7 +66,7 @@ img {
 
 .panel-body .search-area .condition .icons {
     position: absolute;
-    left: 0;
+    left: -5px;
 }
 
 .panel-body .search-area .condition .inputs {

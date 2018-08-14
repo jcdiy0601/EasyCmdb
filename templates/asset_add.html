@@ -1,52 +1,54 @@
 {% extends 'index.html' %}
 
-{% block page-title %}
-    资产管理
+{% block page-header %}
+    <h1 class="page-header"><i class="en-dropbox"></i> 管理资产</h1>
 {% endblock %}
 
 {% block page-path %}
     <li><a href="{% url 'index' %}">首页</a></li>
+    <span>-></span>
     <li><a href="{% url 'asset' %}">资产管理</a></li>
+    <span>-></span>
     <li><a href="{% url 'asset_add' %}">添加资产</a></li>
 {% endblock %}
 
 {% block page-content %}
-    <div class="panel panel-primary">
+    <div class="panel-primary">
         <div class="panel-heading">
             <h3 class="panel-title">选择要创建的资产</h3>
         </div>
-        <!-- /.panel-heading -->
         <div class="panel-body">
-            <div class="col-lg-4">
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
                 <a href="{% url 'asset_add_hardware_server' %}" class="btn pull-left">
-                    <i class="fa fa-cog fa-spin fa-5x" aria-hidden="true"></i>
+                    <i class="ec-cog"></i>
                     <span>硬件服务器</span>
                 </a>
             </div>
-            <div class="col-lg-4">
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
                 <a href="{% url 'asset_add_software_server' %}" class="btn pull-left">
-                    <i class="fa fa-cog fa-spin fa-5x" aria-hidden="true"></i>
+                    <i class="ec-cog"></i>
                     <span>软件服务器</span>
                 </a>
             </div>
-            <div class="col-lg-4">
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
                 <a href="{% url 'asset_hand_add_software_server' %}" class="btn pull-left">
-                    <i class="fa fa-cog fa-spin fa-5x" aria-hidden="true"></i>
+                    <i class="ec-cog"></i>
                     <span>软件服务器[手工录入]</span>
                 </a>
             </div>
-            <div class="col-lg-4" style="margin-top: 20px;">
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
                 <a href="{% url 'asset_add_network_device' %}" class="btn pull-left">
-                    <i class="fa fa-cog fa-spin fa-5x" aria-hidden="true"></i>
+                    <i class="ec-cog"></i>
                     <span>网络设备</span>
                 </a>
             </div>
-            <div class="col-lg-4" style="margin-top: 20px;">
-                <a href="{% url 'asset_add_security_device' %}" class="btn pull-left">
-                    <i class="fa fa-cog fa-spin fa-5x" aria-hidden="true"></i>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                <a href="{% url 'asset_hand_add_security_device' %}" class="btn pull-left">
+                    <i class="ec-cog"></i>
                     <span>安全设备[手工录入]</span>
                 </a>
             </div>
+
         </div>
         <!-- /.panel-body -->
     </div>

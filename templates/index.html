@@ -1,457 +1,151 @@
 {% extends 'base.html' %}
 
+{% block css %}
+
+{% endblock %}
+
 {% block body %}
-    <div id="container" class="effect mainnav-lg mainnav-fixed navbar-fixed footer-fixed">
-
-        <!--NAVBAR-->
-        <!--===================================================-->
-        <header id="navbar">
-            <div id="navbar-container" class="boxed">
-
-                <!--Brand logo & name-->
-                <!--================================-->
+    <!-- Start #header -->
+    <div id="header">
+        <div class="container-fluid">
+            <div class="navbar">
                 <div class="navbar-header">
-                    <a href="{% url 'index' %}" class="navbar-brand">
-                        <img src="/static/plugin/nifty/img/logo.png" alt="Nifty Logo" class="brand-icon">
-                        <div class="brand-title">
-                            <span class="brand-text">资产管理系统</span>
-                        </div>
+                    <a class="navbar-brand" href="{% url 'index' %}">
+                        <i class="en-dropbox text-logo-element animated bounceIn"></i><span
+                            class="text-logo">资产</span><span class="text-slogan">系统</span>
                     </a>
                 </div>
-                <!--================================-->
-                <!--End brand logo & name-->
-
-
-                <!--Navbar Dropdown-->
-                <!--================================-->
-                <div class="navbar-content clearfix">
-                    <ul class="nav navbar-top-links pull-left">
-
-                        <!--Navigation toogle button-->
-                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-                        <li class="tgl-menu-btn">
-                            <a class="mainnav-toggle" href="#">
-                                <i class="fa fa-navicon fa-lg"></i>
+                <nav class="top-nav" role="navigation">
+                    <ul class="nav navbar-nav pull-left">
+                        <li id="toggle-sidebar-li">
+                            <a href="#" id="toggle-sidebar"><i class="en-arrow-left2"></i>
                             </a>
                         </li>
-                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-                        <!--End Navigation toogle button-->
-
-                    </ul>
-                    <ul class="nav navbar-top-links pull-right">
-
-                        <!--User dropdown-->
-                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-                        <li id="dropdown-user" class="dropdown">
-                            <a href="#" data-toggle="dropdown" class="dropdown-toggle text-right">
-								<span class="pull-right">
-									<img class="img-circle img-user media-object" src="/static/plugin/nifty/img/av2.png"
-                                         alt="Profile Picture">
-								</span>
-                                <div class="username hidden-xs">{{ request.user.name }}</div>
-                            </a>
-
-
-                            <div class="dropdown-menu dropdown-menu-md dropdown-menu-right with-arrow panel-default">
-
-                                <!-- Dropdown heading  -->
-                                <div class="pad-all bord-btm">
-                                    <p class="text-lg text-muted text-thin mar-btm">你好，{{ request.user.name }}</p>
-                                </div>
-
-                                <!-- User dropdown menu -->
-                                <ul class="head-list">
-                                    <li>
-                                        <a href="{% url 'user_info' %}">
-                                            <i class="fa fa-user fa-fw fa-lg"></i> 个人信息
-                                        </a>
-                                    </li>
-                                </ul>
-
-                                <!-- Dropdown footer -->
-                                <div class="pad-all text-right">
-                                    <a href="{% url 'acclogout' %}" class="btn btn-primary">
-                                        <i class="fa fa-sign-out fa-fw"></i> 登出
-                                    </a>
-                                </div>
-                            </div>
+                        <li>
+                            <a href="#" class="full-screen"><i class="fa-fullscreen"></i></a>
                         </li>
-                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-                        <!--End user dropdown-->
-
                     </ul>
-                </div>
-                <!--================================-->
-                <!--End Navbar Dropdown-->
-
-            </div>
-        </header>
-        <!--===================================================-->
-        <!--END NAVBAR-->
-
-        <div class="boxed">
-
-            <!--CONTENT CONTAINER-->
-            <!--===================================================-->
-            <div id="content-container">
-
-                <!--Page Title-->
-                <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-                <div id="page-title">
-                    <h1 class="page-header text-overflow">{% block page-title %}仪表盘{% endblock %}</h1>
-                </div>
-                <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-                <!--End page title-->
-
-
-                <!--Breadcrumb-->
-                <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-                <ol class="breadcrumb">
-                    {% block page-path %}
-                        <li><a href="{% url 'index' %}">首页</a></li>
-                    {% endblock %}
-                </ol>
-                <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-                <!--End breadcrumb-->
-
-
-                <!--Page content-->
-                <!--===================================================-->
-
-                <div id="page-content">
-                    {% block page-content %}
-                        <div id="container-chart1" class="col-lg-6" style="height: 400px; margin-bottom: 10px"></div>
-                        <div id="container-chart2" class="col-lg-6" style="height: 400px; margin-bottom: 10px"></div>
-                    {% endblock %}
-                </div>
-
-
-                <!--===================================================-->
-                <!--End page content-->
-
-
-            </div>
-            <!--===================================================-->
-            <!--END CONTENT CONTAINER-->
-
-
-            <!--MAIN NAVIGATION-->
-            <!--===================================================-->
-            <nav id="mainnav-container">
-                <div id="mainnav">
-
-                    <!--Menu-->
-                    <!--================================-->
-                    <div id="mainnav-menu-wrap">
-                        <div class="nano">
-                            <div class="nano-content">
-                                <ul id="mainnav-menu" class="list-group">
-
-                                    <!--Menu list item-->
-                                    <li>
-                                        <a href="{% url 'index' %}">
-                                            <i class="fa fa-tachometer"></i>
-                                            <span class="menu-title">
-                                                <strong>仪表盘</strong>
-                                                <span class="label label-success pull-right">Top</span>
-                                            </span>
-                                        </a>
-                                    </li>
-
-                                    <!--Menu list item-->
-                                    <li>
-                                        <a href="{% url 'asset' %}">
-                                            <i class="fa fa-cube"></i>
-                                            <span class="menu-title">
-												<strong>资产管理</strong>
-											</span>
-                                        </a>
-                                    </li>
-
-                                    <!--Menu list item-->
-                                    <li>
-                                        <a href="{% url 'idc' %}">
-                                            <i class="fa fa-home"></i>
-                                            <span class="menu-title">
-												<strong>IDC管理</strong>
-											</span>
-                                        </a>
-                                    </li>
-
-                                    <!--Menu list item-->
-                                    <li>
-                                        <a href="{% url 'business_unit' %}">
-                                            <i class="fa fa-phone"></i>
-                                            <span class="menu-title">
-												<strong>业务线管理</strong>
-											</span>
-                                        </a>
-                                    </li>
-
-                                    <!--Menu list item-->
-                                    <li>
-                                        <a href="{% url 'tag' %}">
-                                            <i class="fa fa-tag"></i>
-                                            <span class="menu-title">
-												<strong>标签管理</strong>
-											</span>
-                                        </a>
-                                    </li>
-
-                                    <!--Menu list item-->
-                                    <li>
-                                        <a href="{% url 'user' %}">
-                                            <i class="fa fa-user"></i>
-                                            <span class="menu-title">
-												<strong>用户管理</strong>
-											</span>
-                                        </a>
-                                    </li>
-
-                                    <!--Menu list item-->
-                                    <li>
-                                        <a href="{% url 'search_ip' %}">
-                                            <i class="fa fa-rss"></i>
-                                            <span class="menu-title">
-												<strong>查询可用IP</strong>
-											</span>
-                                        </a>
-                                    </li>
-
-                                    <!--Menu list item-->
-                                    <li>
-										<a href="#">
-											<i class="fa fa-search"></i>
-											<span class="menu-title">
-												<strong>虚拟机归属管理</strong>
-                                                <span class="pull-right badge badge-warning">2</span>
-											</span>
-											<i class="arrow"></i>
-										</a>
-
-										<!--Submenu-->
-										<ul class="collapse">
-                                            <li><a href="{% url 'show_all_affiliation' %}">显示所有虚拟机归属</a></li>
-											<li><a href="{% url 'search_affiliation' %}">查询虚拟机归属</a></li>
-										</ul>
-									</li>
-
-                                </ul>
-
-
-                                <!--Widget-->
-                                <!--================================-->
-                                <div class="mainnav-widget">
-
-                                    <!-- Show the button on collapsed navigation -->
-                                    <div class="show-small">
-                                        <a href="#" data-toggle="menu-widget" data-target="#demo-wg-server">
-                                            <i class="fa fa-desktop"></i>
-                                        </a>
-                                    </div>
-
-                                </div>
-                                <!--================================-->
-                                <!--End widget-->
-
-                            </div>
-                        </div>
-                    </div>
-                    <!--================================-->
-                    <!--End menu-->
-
-                </div>
-            </nav>
-            <!--===================================================-->
-            <!--END MAIN NAVIGATION-->
-
-            <!--ASIDE-->
-            <!--===================================================-->
-            <aside id="aside-container">
-                <div id="aside">
-                    <div class="nano">
-                        <div class="nano-content">
-
-                            <!--Nav tabs-->
-                            <!--================================-->
-                            <ul class="nav nav-tabs nav-justified">
-                                <li class="active">
-                                    <a href="#demo-asd-tab-1" data-toggle="tab">
-                                        <i class="fa fa-comments"></i>
-                                        <span class="badge badge-purple">7</span>
-                                    </a>
+                    <ul class="nav navbar-nav pull-right">
+                        <li class="dropdown">
+                            <a href="#" data-toggle="dropdown">
+                                <img class="user-avatar" src="/static/plugin/assets/img/avatars/53.jpg"
+                                     alt="SuggeElson">{{ request.user.name }}</a>
+                            <ul class="dropdown-menu right" role="menu">
+                                <li><a href="{% url 'user_info' %}"><i class="st-user"></i> 个人信息</a>
                                 </li>
-                                <li>
-                                    <a href="#demo-asd-tab-2" data-toggle="tab">
-                                        <i class="fa fa-info-circle"></i>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#demo-asd-tab-3" data-toggle="tab">
-                                        <i class="fa fa-wrench"></i>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#demo-asd-tab-4" data-toggle="tab">
-                                        <i class="fa fa-shield"></i>
-                                        <span class="label label-success">New</span>
-                                    </a>
+                                <li><a href="{% url 'acclogout' %}"><i class="st-cloud"></i> 登出</a>
                                 </li>
                             </ul>
-                            <!--================================-->
-                            <!--End nav tabs-->
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        <!-- Start .header-inner -->
+    </div>
+    <!-- End #header -->
+    <!-- Start #sidebar -->
+    <div id="sidebar">
+        <!-- Start .sidebar-inner -->
+        <div class="sidebar-inner">
+            <!-- Start #sideNav -->
+            <ul id="sideNav" class="nav nav-pills nav-stacked">
+                <li class="top-search">
+                    <form>
+                        <input type="text" name="search" placeholder="Search ...">
+                        <button type="submit"><i class="ec-search s20"></i>
+                        </button>
+                    </form>
+                </li>
+                <li><a href="{% url 'index' %}">仪表盘<i class="im-screen"></i></a>
+                </li>
+                <li><a href="">机柜展示 <i class="st-chart"></i></a>
+                </li>
+                <li>
+                    <a href="#"> 资产 <i class="im-cogs"></i></a>
+                    <ul class="nav sub">
+                        <li><a href="{% url 'asset' %}"><i class="en-dropbox"></i> 管理资产</a>
+                        </li>
+                        <li><a href="{% url 'idc' %}"><i class="st-cube"></i> 管理IDC</a>
+                        </li>
+                        <li><a href="{% url 'business_unit' %}"><i class="im-wand"></i> 管理业务线</a>
+                        </li>
+                        <li><a href="{% url 'tag' %}"><i class="im-copy"></i> 管理标签</a>
+                        </li>
+                    </ul>
+                </li>
+                <li><a href="#"> 用户 <i class="im-folder-open"></i></a>
+                    <ul class="nav sub">
+                        <li><a href="{% url 'user' %}"><i class="ec-users"></i> 管理用户</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <!-- End #sideNav -->
+        </div>
+        <!-- End .sidebar-inner -->
+    </div>
+    <!-- End #sidebar -->
 
-
-                            <!-- Tabs Content -->
-                            <!--================================-->
-                            <div class="tab-content">
-
-                                <!--First tab-->
-                                <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-                                <div class="tab-pane fade in active" id="demo-asd-tab-1">
-                                    <h4 class="pad-hor text-thin">
-                                        First tab
-                                    </h4>
-                                    <div class="pad-all">
-
-                                        Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
-                                        sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat
-                                        volutpat.
-                                        Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit
-                                        lobortis nisl
-                                        ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit
-                                        in vulputate
-                                        velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at
-                                        vero eros et accumsan
-                                        et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis
-                                        dolore te feugait nulla facilisi.
-
-                                    </div>
-
-                                </div>
-                                <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-                                <!--End first tab-->
-
-
-                                <!--Second tab-->
-                                <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-                                <div class="tab-pane fade" id="demo-asd-tab-2">
-                                    <h4 class="pad-hor text-thin">
-                                        Second tab
-                                    </h4>
-                                    <div class="pad-all">
-
-                                        Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
-                                        sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat
-                                        volutpat.
-                                        Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit
-                                        lobortis nisl
-                                        ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit
-                                        in vulputate
-                                        velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at
-                                        vero eros et accumsan
-                                        et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis
-                                        dolore te feugait nulla facilisi.
-
-                                    </div>
-                                </div>
-                                <!--End second tab-->
-                                <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-
-
-                                <!--Third tab-->
-                                <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-                                <div class="tab-pane fade" id="demo-asd-tab-3">
-                                    <h4 class="pad-hor text-thin">
-                                        Third tab
-                                    </h4>
-                                    <div class="pad-all">
-
-                                        Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
-                                        sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat
-                                        volutpat.
-                                        Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit
-                                        lobortis nisl
-                                        ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit
-                                        in vulputate
-                                        velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at
-                                        vero eros et accumsan
-                                        et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis
-                                        dolore te feugait nulla facilisi.
-
-                                    </div>
-
-                                </div>
-                                <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-                                <!--Third tab-->
-
-                                <!--Fourth tab-->
-                                <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-                                <div class="tab-pane fade" id="demo-asd-tab-4">
-                                    <h4 class="pad-hor text-thin">
-                                        Fourth tab
-                                    </h4>
-                                    <div class="pad-all">
-
-                                        Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
-                                        sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat
-                                        volutpat.
-                                        Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit
-                                        lobortis nisl
-                                        ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit
-                                        in vulputate
-                                        velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at
-                                        vero eros et accumsan
-                                        et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis
-                                        dolore te feugait nulla facilisi.
-
-                                    </div>
-
-                                </div>
-                                <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-                                <!--Third tab (Settings)-->
-
+    <!-- Start #content -->
+    <div id="content">
+        <!-- Start .content-wrapper -->
+        <div class="content-wrapper">
+            <div class="row">
+                <!-- Start .row -->
+                <!-- Start .page-header -->
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 heading">
+                    {% block page-header %}
+                        <h1 class="page-header"><i class="im-screen"></i> 仪表盘</h1>
+                    {% endblock %}
+                    <!-- Start .bredcrumb -->
+                    <ul class="breadcrumb">
+                        {% block page-path %}
+                            <li><a href="{% url 'index' %}">仪表盘</a></li>
+                        {% endblock %}
+                    </ul>
+                    <!-- End .breadcrumb -->
+                    <!-- Start .option-buttons -->
+                    <div class="option-buttons">
+                        <div class="btn-toolbar" role="toolbar">
+                            <div class="btn-group">
+                                <a id="clear-localstorage" class="btn tip" title="Reset panels position">
+                                    <i class="ec-refresh color-red s24"></i>
+                                </a>
                             </div>
                         </div>
                     </div>
+                    <!-- End .option-buttons -->
                 </div>
-            </aside>
-            <!--===================================================-->
-            <!--END ASIDE-->
-
+                <!-- End .page-header -->
+            </div>
+            <!-- End .row -->
+            <div class="outlet">
+                <!-- Start .outlet -->
+                {% block page-content %}
+                    <div class="panel-primary">
+                        <!--Panel heading-->
+                        <div class="panel-heading">
+                            <h3 class="panel-title">仪表盘</h3>
+                        </div>
+                        <!--Default panel contents-->
+                        <div class="panel-body">
+                            <div id="show-chart" style="max-width:1200px;height:400px">
+                                <div id="container-chart1" class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="height: 400px; margin-bottom: 10px"></div>
+                                <div id="container-chart2" class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="height: 400px; margin-bottom: 10px"></div>
+                                <div id="container-chart3" class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="height: 400px; margin-bottom: 10px"></div>
+                            </div>
+                        </div>
+                    </div>
+                {% endblock %}
+                <!-- Page End here -->
+            </div>
+            <!-- End .outlet -->
         </div>
-
-
-        <!-- FOOTER -->
-        <!--===================================================-->
-        <footer id="footer">
-
-            <!-- Visible when footer positions are static -->
-            <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-            <div class="hide-fixed pull-right pad-rgt">Currently v1.0.0</div>
-
-
-            <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-            <!-- Remove the class name "show-fixed" and "hide-fixed" to make the content always appears. -->
-            <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-
-            <p class="pad-lft">&#0169; 桃花石</p>
-
-
-        </footer>
-        <!--===================================================-->
-        <!-- END FOOTER -->
-
-
-        <!-- SCROLL TOP BUTTON -->
-        <!--===================================================-->
-        <button id="scroll-top" class="btn"><i class="fa fa-chevron-up"></i></button>
-        <!--===================================================-->
-
-
+        <!-- End .content-wrapper -->
+        <div class="clearfix"></div>
     </div>
-    <!--===================================================-->
-    <!-- END OF CONTAINER -->
+    <!-- End #content -->
 {% endblock %}
 
 {% block js %}

@@ -51,9 +51,9 @@ class User(BaseServiceList):
                 'title': '选项',
                 'display': 1,
                 'text': {
-                    'content': '<a href="/cmdb_web/user_edit_{n}.html" class="btn btn-xs btn-warning">编辑</a> \
-                    | <a href="/cmdb_web/user_change_pass_{n}.html" class="btn btn-xs btn-danger">重置密码</a>\
-                    | <a href="/cmdb_web/user_change_permission_{n}.html" class="btn btn-xs btn-pink">修改权限</a>',
+                    'content': '<a href="/cmdb_web/user_edit_{n}.html" class="btn btn-xs btn-default">编辑</a> \
+                    | <a href="/cmdb_web/user_change_pass_{n}.html" class="btn btn-xs btn-default">重置密码</a>\
+                    | <a href="/cmdb_web/user_change_permission_{n}.html" class="btn btn-xs btn-default">修改权限</a>',
                     'kwargs': {'n': '@id'}
                 },
                 'attr': {}

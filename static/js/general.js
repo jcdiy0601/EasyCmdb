@@ -248,7 +248,7 @@
             tag = $.CreateInput(
                 {
                     "is-condition": "true",
-                    "class": "form-control no-radius",
+                    "class": "form-control",
                     "name": item.name,
                     "placeholder": "逗号分割多条件"
                 },
@@ -258,7 +258,7 @@
             tag = $.CreateSelect(
                 {
                     "is-condition": "true",
-                    "class": "form-control no-radius",
+                    "class": "form-control",
                     "name": item.name
                 },
                 {},
@@ -436,7 +436,7 @@
         var $handle_status = $("#handle_status");
         $handle_status.attr("style", "display: block");
         $handle_status.popover("destroy");
-        var msg = "<i class='fa fa-check'></i>" + content;
+        var msg = "<i class='fa-check'></i>" + content;
         $handle_status.empty().removeClass("btn-danger").addClass("btn-success").html(msg);
         setTimeout(function () {
             $handle_status.empty().removeClass("btn-success btn-danger").attr("style", "display: none");
@@ -557,7 +557,7 @@
                 tag = $.CreateInput(
                     {
                         "is-condition": "true",
-                        "class": "form-control no-radius",
+                        "class": "form-control",
                         "name": name,
                         "placeholder": "逗号分割多条件"
                     },
@@ -567,7 +567,7 @@
                 tag = $.CreateSelect(
                     {
                         "is-condition": "true",
-                        "class": "form-control no-radius",
+                        "class": "form-control",
                         "name": name
                     },
                     {},
@@ -658,7 +658,13 @@
                 var opt = document.createElement("option");
                 var opt_text = value[keyText];
                 var opt_value = value[keyValue];
-                if (opt_value === parseInt(currentValue)){
+                if (opt_value === parseInt(currentValue)) {
+                    $(opt).text(opt_text).attr("value", opt_value).attr("text", opt_text).appendTo($(sel));
+                    $(opt).prop("selected", true);
+
+                } else if (opt_value === null){
+                    opt_value = "";
+                    opt_text = "";
                     $(opt).text(opt_text).attr("value", opt_value).attr("text", opt_text).appendTo($(sel));
                     $(opt).prop("selected", true);
                 } else if (opt_value === currentValue) {
@@ -793,7 +799,7 @@
         // 搜索插件 -> 添加搜索条件 ths:点击的当前对象
         "AddSearchCondition": function (ths) {
             var $duplicate = $(ths).parent().parent().clone(true);
-            $duplicate.find(".fa-plus").addClass("fa-minus").removeClass("fa-plus");
+            $duplicate.find(".im-plus").addClass("im-minus").removeClass("im-plus");
             $duplicate.find("a[onclick='$.AddSearchCondition(this)']").attr("onclick", "$.RemoveSearchCondition(this)");
             $duplicate.appendTo($(ths).parent().parent().parent());
         },

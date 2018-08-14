@@ -14,10 +14,10 @@ class Asset(BaseServiceList):
     def __init__(self):
         # 查询条件配置
         condition_config = [
+            {'name': 'business_unit_id', 'text': '所属业务线', 'condition_type': 'select', 'global_name': 'business_unit_list'},
             {'name': 'idc_id', 'text': 'IDC机房', 'condition_type': 'select', 'global_name': 'idc_list'},
             {'name': 'asset_type', 'text': '资产类型', 'condition_type': 'select', 'global_name': 'asset_type_list'},
-            {'name': 'asset_status', 'text': '资产状态', 'condition_type': 'select', 'global_name': 'asset_status_list'},
-            {'name': 'business_unit_id', 'text': '所属业务线', 'condition_type': 'select', 'global_name': 'business_unit_list'}
+            {'name': 'asset_status', 'text': '资产状态', 'condition_type': 'select', 'global_name': 'asset_status_list'}
         ]
         # 表格配置
         table_config = [
@@ -96,7 +96,7 @@ class Asset(BaseServiceList):
                 'title': '选项',
                 'display': 1,
                 'text': {
-                    'content': '<a href="/cmdb_web/asset_detail_{m}_{n}.html" class="btn btn-xs btn-mint">查看详细</a> | <a href="/cmdb_web/asset_edit_{m}_{n}.html" class="btn btn-xs btn-warning">编辑</a>',
+                    'content': '<a href="/cmdb_web/asset_detail_{m}_{n}.html" class="btn btn-xs btn-default">查看详细</a> | <a href="/cmdb_web/asset_edit_{m}_{n}.html" class="btn btn-xs btn-default">编辑</a>',
                     'kwargs': {'m': '@asset_type', 'n': '@id'}
                 },
                 'attr': {}
@@ -119,7 +119,7 @@ class Asset(BaseServiceList):
         result = models.BusinessUnit.objects.values('id', 'name')
         result = list(result)
         result.insert(0, {'id': None, 'name': None})
-        return result           # [{'id': None, 'name': None}, {'id': 1, 'name': '开发组'}, {'id': 2, 'name': '测试组'}]
+        return result           # [{'id': '', 'name': ''}, {'id': 1, 'name': '开发组'}, {'id': 2, 'name': '测试组'}]
 
     @property
     def idc_list(self):
